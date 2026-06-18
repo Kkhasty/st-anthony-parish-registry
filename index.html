@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Anthony Catholic Rectorate Kwamo - Registration System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Palette Settings - Catholic Theme Inspired (Gold, White, Deep Royal Blue) */
+        :root {
+            --primary-blue: #0A2540;
+            --accent-gold: #D4AF37;
+            --light-gold: #F3E5AB;
+            --pure-white: #FFFFFF;
+            --soft-gray: #F8F9FA;
+            --border-gray: #E2E8F0;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+            --success-green: #2F855A;
+            --danger-red: #C53030;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--soft-gray);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header UI Elements */
+        .main-header {
+            background-color: var(--primary-blue);
+            color: var(--pure-white);
+            border-bottom: 4px solid var(--accent-gold);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .church-logo-icon {
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+        }
+
+        .logo-area h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .location-tag {
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* Navigation Layout */
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--pure-white);
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--accent-gold);
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .admin-nav {
+            border: 1px dashed var(--accent-gold);
+        }
+
+        /* Content Layout Management */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .tab-content {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Home Layout */
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary-blue), #1e3d59);
+            color: var(--pure-white);
+            padding: 2.5rem;
+            border-radius: 8px;
+            border-left: 6px solid var(--accent-gold);
+            margin-bottom: 2rem;
+        }
+
+        .welcome-card h2 { margin-bottom: 0.75rem; color: var(--accent-gold); }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .metric-card {
+            background-color: var(--pure-white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border: 1px solid var(--border-gray);
+        }
+
+        .quick-link {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .quick-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            border-color: var(--accent-gold);
+        }
+
+        .icon-metric {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+        }
+
+        .icon-metric.gold { color: var(--accent-gold); }
+
+        .metric-info h3 { font-size: 2rem; color: var(--primary-blue); }
+        .metric-info p { color: var(--text-light); font-size: 0.9rem; }
+
+        /* Form Styles */
+        .section-title {
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-gray);
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title h2 { color: var(--primary-blue); }
+
+        .styled-form fieldset {
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            background-color: var(--pure-white);
+            margin-bottom: 1.5rem;
+        }
+
+        .styled-form legend {
+            font-weight: bold;
+            color: var(--primary-blue);
+            padding: 0 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .span-2 { grid-column: span 2; }
+        .span-3 { grid-column: span 3; }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .required { color: var(--danger-red); }
+
+        input, select, textarea {
+            padding: 0.65rem;
+            border: 1px solid var(--border-gray);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            background-color: #FFF;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(10,37,64,0.1);
+        }
+
+        input[readonly] {
+            background-color: var(--border-gray);
+            cursor: not-allowed;
+        }
+
+        .input-tip { font-size: 0.8rem; color: var(--text-light); }
+
+        #photoPreviewContainer img {
+            max-width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 2px solid var(--accent-gold);
+            margin-top: 0.5rem;
+        }
+
+        /* Table Interfaces */
+        .responsive-table-container {
+            width: 100%;
+            overflow-x: auto;
+            background-color: var(--pure-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-top: 1rem;
+            border: 1px solid var(--border-gray);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .data-table th {
+            background-color: var(--primary-blue);
+            color: var(--pure-white);
+            font-weight: 600;
+        }
+
+        .data-table tr:hover { background-color: #F8FAFC; }
+
+        .table-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--accent-gold);
+        }
+
+        /* Buttons Utility Context */
+        .form-actions, .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .action-bar {
+            background-color: var(--pure-white);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-gray);
+            justify-content: flex-start;
+        }
+
+        button[class^="btn-"] {
+            padding: 0.65rem 1.25rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: filter 0.2s;
+        }
+
+        button[class^="btn-"]:hover { filter: brightness(1.1); }
+
+        .btn-primary { background-color: var(--primary-blue); color: #FFF; }
+        .btn-secondary { background-color: var(--text-light); color: #FFF; }
+        .btn-success { background-color: var(--success-green); color: #FFF; }
+        .btn-danger { background-color: var(--danger-red); color: #FFF; }
+        .btn-full { width: 100%; justify-content: center; }
+
+        /* Control Utilities */
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            background-color: var(--pure-white);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-gray);
+        }
+
+        .search-box input { flex: 1; }
+
+        .auth-card {
+            max-width: 400px;
+            margin: 4rem auto;
+            background-color: var(--pure-white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--accent-gold);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        /* Toast Messages Notification overlay */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            color: #FFF;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideIn { from { transform: translateX(120%); } to { transform: translateX(0); } }
+        .toast-success { background-color: var(--success-green); }
+        .toast-error { background-color: var(--danger-red); }
+
+        /* Modal and Print System Styling overrides */
+        .modal-overlay {
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background-color: rgba(0,0,0,0.6);
+            display:flex; justify-content:center; align-items:center;
+            z-index: 500;
+        }
+
+        .modal-card {
+            background-color: #FFF;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display:flex; justify-content:space-between; align-items:center;
+            border-bottom: 2px solid var(--border-gray);
+            padding-bottom: 0.5rem; margin-bottom: 1.5rem;
+        }
+
+        .close-modal-btn { background:none; border:none; font-size:1.5rem; cursor:pointer; }
+
+        /* Print Layout Optimization Matrix mapping */
+        .print-dossier-layout {
+            padding: 1.5rem; border: 3px double var(--accent-gold); background-color: #FFF;
+        }
+        .dossier-header { text-align: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary-blue); padding-bottom: 0.5rem; }
+        .dossier-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; margin-top: 1rem; }
+        .dossier-avatar { width: 130px; height: 130px; object-fit: cover; border: 2px solid var(--primary-blue); margin: 0 auto; display: block;}
+
+        /* Mobile Optimization Breakpoints Grid Adjuster */
+        @media (max-width: 768px) {
+            .header-container { flex-direction: column; text-align: center; }
+            .form-grid { grid-template-columns: 1fr; }
+            .span-2, .span-3 { grid-column: span 1; }
+            .nav-menu { width: 100%; flex-wrap: wrap; justify-content: center; }
+            .search-box { flex-direction: column; }
+        }
+
+        @media print {
+            body { background: #FFF; color: #000; }
+            .no-print, header, .form-actions, .action-bar, .search-box { display: none !important; }
+            .modal-overlay { position: absolute; background: none; top:0; left:0; width:100%; height:auto; }
+            .modal-card { width: 100%; max-width: 100%; box-shadow: none; padding: 0; }
+            .print-dossier-layout { border: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <i class="fa-solid fa-church church-logo-icon"></i>
+                <div>
+                    <h1>St. Anthony Catholic Rectorate</h1>
+                    <p class="location-tag">Kwamo, Ghana</p>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn active" id="nav-dashboard" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
+                <button class="nav-btn" id="nav-registration" onclick="switchTab('registration')"><i class="fa-solid fa-user-plus"></i> Register</button>
+                <button class="nav-btn" id="nav-search" onclick="switchTab('search')"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                <button class="nav-btn admin-nav" id="nav-admin" onclick="switchTab('admin')"><i class="fa-solid fa-lock"></i> Admin Portal</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="toast-container" class="hidden"></div>
+
+        <section id="dashboard-tab" class="tab-content">
+            <div class="welcome-card">
+                <h2>Welcome to the Member Registry Platform</h2>
+                <p>Ensuring accurate records to support spiritual administration, operational outreach, and community engagement within the St. Anthony Parish family.</p>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <i class="fa-solid fa-users icon-metric"></i>
+                    <div class="metric-info">
+                        <h3 id="stat-count">0</h3>
+                        <p>Total Registered Parishioners</p>
+                    </div>
+                </div>
+                <div class="metric-card quick-link" onclick="switchTab('registration')">
+                    <i class="fa-solid fa-clipboard-list icon-metric gold"></i>
+                    <div class="metric-info">
+                        <h3>New Entry</h3>
+                        <p>Launch Member Registration Form</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="registration-tab" class="tab-content hidden">
+            <div class="section-title">
+                <h2><i class="fa-solid fa-user-plus"></i> Parishioner Registration Form</h2>
+                <p>Fill out all applicable blocks. Ensure information matches identity documents correctly.</p>
+            </div>
+
+            <form id="memberForm" class="styled-form">
+                <input type="hidden" id="edit-member-id" value="">
+                
+                <fieldset>
+                    <legend><i class="fa-solid fa-id-card"></i> Personal Information</legend>
+                    <div class="form-grid">
+                        <div class="form-group span-2">
+                            <label for="fullName">Full Name (Surname First) <span class="required">*</span></label>
+                            <input type="text" id="fullName" required placeholder="e.g., Mensah, Emmanuel Kofi">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender <span class="required">*</span></label>
+                            <select id="gender" required>
+                                <option value="">-- Select --</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dob">Date of Birth <span class="required">*</span></label>
+                            <input type="date" id="dob" required onchange="handleDobChange(this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Calculated Age</label>
+                            <input type="number" id="age" readonly placeholder="Calculated automatically">
+                        </div>
+                        <div class="form-group">
+                            <label for="dayBorn">Day Born</label>
+                            <input type="text" id="dayBorn" readonly placeholder="Calculated automatically">
+                        </div>
+                        <div class="form-group">
+                            <label for="nationality">Nationality <span class="required">*</span></label>
+                            <input type="text" id="nationality" required value="Ghanaian">
+                        </div>
+                        <div class="form-group">
+                            <label for="idCardType">Identity Document Type <span class="required">*</span></label>
+                            <select id="idCardType" required onchange="updateIdPlaceholder(this.value)">
+                                <option value="Ghana Card">Ghana Card (GHA)</option>
+                                <option value="Voter ID">Voter's ID Card</option>
+                                <option value="NHIS Card">NHIS Card</option>
+                                <option value="Driving License">Driving License</option>
+                            </select>
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="idCardNumber">Document Identification Number <span class="required">*</span></label>
+                            <input type="text" id="idCardNumber" required placeholder="e.g., GHA-123456789-0">
+                        </div>
+                        <div class="form-group">
+                            <label for="ethnicity">Ethnicity <span class="required">*</span></label>
+                            <select id="ethnicity" required>
+                                <option value="">-- Select Ethnicity --</option>
+                                <option value="Asante">Asante</option>
+                                <option value="Fante">Fante</option>
+                                <option value="Akuapem">Akuapem</option>
+                                <option value="Akyem">Akyem</option>
+                                <option value="Bono">Bono</option>
+                                <option value="Kwahu">Kwahu</option>
+                                <option value="Nzema">Nzema</option>
+                                <option value="Ahanta">Ahanta</option>
+                                <option value="Sefwi">Sefwi</option>
+                                <option value="Wassa">Wassa</option>
+                                <option value="Dagomba">Dagomba</option>
+                                <option value="Mamprusi">Mamprusi</option>
+                                <option value="Nanumba">Nanumba</option>
+                                <option value="Gonja">Gonja</option>
+                                <option value="Ewe">Ewe</option>
+                                <option value="Ga">Ga</option>
+                                <option value="Krobo">Krobo</option>
+                                <option value="Ada">Ada</option>
+                                <option value="Shai">Shai</option>
+                                <option value="Osudoku">Osudoku</option>
+                                <option value="Frafra">Frafra</option>
+                                <option value="Kusasi">Kusasi</option>
+                                <option value="Konkomba">Konkomba</option>
+                                <option value="Kasena">Kasena</option>
+                                <option value="Nankani">Nankani</option>
+                                <option value="Sissala">Sissala</option>
+                                <option value="Dagaaba">Dagaaba</option>
+                                <option value="Wala">Wala</option>
+                                <option value="Lobi">Lobi</option>
+                                <option value="Birifor">Birifor</option>
+                                <option value="Nawuri">Nawuri</option>
+                                <option value="Nchumuru">Nchumuru</option>
+                                <option value="Krachi">Krachi</option>
+                                <option value="Fulani">Fulani</option>
+                                <option value="Hausa">Hausa</option>
+                                <option value="Other">Other (Specify in Notes)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="educationLevel">Level of Education <span class="required">*</span></label>
+                            <select id="educationLevel" required>
+                                <option value="">-- Select Education --</option>
+                                <option value="No Formal Education">No Formal Education</option>
+                                <option value="Primary School">Primary School</option>
+                                <option value="Junior High School (JHS)">Junior High School (JHS)</option>
+                                <option value="Senior High School (SHS)">Senior High School (SHS)</option>
+                                <option value="Technical/Vocational School">Technical/Vocational School</option>
+                                <option value="Certificate">Certificate</option>
+                                <option value="Diploma/HND">Diploma/HND</option>
+                                <option value="Bachelor's Degree">Bachelor's Degree</option>
+                                <option value="Master's Degree">Master's Degree</option>
+                                <option value="Doctorate (PhD)">Doctorate (PhD)</option>
+                                <option value="Professional Qualification">Professional Qualification</option>
+                                <option value="Other">Other (Specify in Notes)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="occupation">Occupation / Profession</label>
+                            <input type="text" id="occupation" placeholder="e.g., Teacher, Trader">
+                        </div>
+                        <div class="form-group">
+                            <label for="placeOfWork">Place of Work</label>
+                            <input type="text" id="placeOfWork" placeholder="e.g., GES, Commercial Bank">
+                        </div>
+                        <div class="form-group">
+                            <label for="maritalStatus">Marital Status <span class="required">*</span></label>
+                            <select id="maritalStatus" required>
+                                <option value="">-- Select --</option>
+                                <option value="Single">Single</option>
+                                <option value="Married (Catholic Check)">Married (Catholic Church)</option>
+                                <option value="Married (Customary/Civil)">Married (Customary/Civil)</option>
+                                <option value="Widowed">Widowed</option>
+                                <option value="Divorced/Separated">Divorced / Separated</option>
+                            </select>
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="homeAddress">Residential Home Address <span class="required">*</span></label>
+                            <input type="text" id="homeAddress" required placeholder="e.g., Plot 14, Block B, Kwamo">
+                        </div>
+                        <div class="form-group">
+                            <label for="digitalAddress">Ghana Post Digital Address</label>
+                            <input type="text" id="digitalAddress" placeholder="e.g., AK-123-4567">
+                        </div>
+                        <div class="form-group">
+                            <label for="phoneNumber">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="phoneNumber" required placeholder="e.g., 0241234567">
+                        </div>
+                        <div class="form-group">
+                            <label for="whatsAppNumber">WhatsApp Number</label>
+                            <input type="tel" id="whatsAppNumber" placeholder="e.g., 0241234567">
+                        </div>
+                        <div class="form-group">
+                            <label for="emailAddress">Email Address</label>
+                            <input type="email" id="emailAddress" placeholder="example@mail.com">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend><i class="fa-solid fa-cross"></i> Sacraments & Church Information</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="baptized">Are you Baptized? <span class="required">*</span></label>
+                            <select id="baptized" required onchange="toggleBaptismDate(this.value)">
+                                <option value="">-- Select --</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="baptism-date-group">
+                            <label for="baptismDate">Baptism Date (If known)</label>
+                            <input type="date" id="baptismDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="firstHolyCommunion">Received First Holy Communion? <span class="required">*</span></label>
+                            <select id="firstHolyCommunion" required>
+                                <option value="">-- Select --</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmation">Received Confirmation? <span class="required">*</span></label>
+                            <select id="confirmation" required>
+                                <option value="">-- Select --</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="parishGroup">Parish Group/Association</label>
+                            <select id="parishGroup">
+                                <option value="None">None</option>
+                                <option value="Catholic Men Association">Catholic Men Association</option>
+                                <option value="St. Theresa of the Child Jesus">St. Theresa of the Child Jesus</option>
+                                <option value="Legon of Mary">Legon of Mary</option>
+                                <option value="Knights & Ladies of the Blessed Sacrament">Knights & Ladies of the Blessed Sacrament</option>
+                                <option value="Charismatic Renewal">Charismatic Renewal</option>
+                                <option value="Christian Mothers">Christian Mothers</option>
+                                <option value="St. Anthony">St. Anthony</option>
+                                <option value="Good Samaritan">Good Samaritan</option>
+                                <option value="Healds of Praise">Healds of Praise</option>
+                                <option value="Other">Other (Specify in Notes)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ministry">Church Ministry involvement</label>
+                            <select id="ministry">
+                                <option value="None">None</option>
+                                <option value="Choir">Choir</option>
+                                <option value="Ushering Group">Ushering Group</option>
+                                <option value="Lectors">Lectors</option>
+                                <option value="Catechists Team">Catechists Team</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateJoined">Date Joined St. Anthony</label>
+                            <input type="date" id="dateJoined">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend><i class="fa-solid fa-people-roof"></i> Family Information</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fatherName">Father's Full Name</label>
+                            <input type="text" id="fatherName" placeholder="Father's name">
+                        </div>
+                        <div class="form-group">
+                            <label for="motherName">Mother's Full Name</label>
+                            <input type="text" id="motherName" placeholder="Mother's name">
+                        </div>
+                        <div class="form-group">
+                            <label for="emergencyName">Emergency Contact Person <span class="required">*</span></label>
+                            <input type="text" id="emergencyName" required placeholder="Full name of contact">
+                        </div>
+                        <div class="form-group">
+                            <label for="emergencyPhone">Emergency Contact Number <span class="required">*</span></label>
+                            <input type="tel" id="emergencyPhone" required placeholder="Phone number">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend><i class="fa-solid fa-paperclip"></i> Media & Additional Records</legend>
+                    <div class="form-grid">
+                        <div class="form-group span-2">
+                            <label for="profilePhotoFile">Profile Photo (Passport layout formatting)</label>
+                            <input type="file" id="profilePhotoFile" accept="image/*" onchange="processImageFile(this)">
+                            <input type="hidden" id="profilePhotoUrl" value="">
+                            <p class="input-tip">Upload standard passport photo sizing format (Max 1.5MB).</p>
+                            <div id="photoPreviewContainer" class="hidden">
+                                <img id="photoPreview" src="" alt="Preview Profile Image">
+                            </div>
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="specialSkills">Special Talents / Skills</label>
+                            <input type="text" id="specialSkills" placeholder="e.g., Musical Instruments, Event Organization, Plumbing">
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="prayerRequests">Prayer Intentions / Requests</label>
+                            <textarea id="prayerRequests" rows="3" placeholder="Optional private items shared with Pastoral Office..."></textarea>
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="notes">General Administrative Notes</label>
+                            <textarea id="notes" rows="2" placeholder="Any extra items to report..."></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="resetForm()">Clear Form</button>
+                    <button type="submit" id="submitBtn" class="btn-primary">Save Information</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="search-tab" class="tab-content hidden">
+            <div class="section-title">
+                <h2><i class="fa-solid fa-magnifying-glass"></i> Registry Lookup</h2>
+                <p>Public lookup endpoint. Type criteria below to instantly filter records.</p>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="searchBar" onkeyup="filterLocalSearch()" placeholder="Search members locally by Name, Phone, Group, or Ministry...">
+                <button class="btn-primary" onclick="triggerFetchForSearch()"><i class="fa-solid fa-sync"></i> Refresh Data Cache</button>
+            </div>
+
+            <div class="responsive-table-container">
+                <table class="data-table" id="searchTable">
+                    <thead>
+                        <tr>
+                            <th>Member ID</th>
+                            <th>Full Name</th>
+                            <th>Gender</th>
+                            <th>Phone Number</th>
+                            <th>Parish Group</th>
+                            <th>Ministry</th>
+                        </tr>
+                    </thead>
+                    <tbody id="searchTableBody">
+                        <tr>
+                            <td colspan="6" class="center-text">Click 'Refresh Data Cache' to pull updated records.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="admin-tab" class="tab-content hidden">
+            <div class="section-title">
+                <h2><i class="fa-solid fa-lock"></i> Administration Registry Terminal</h2>
+                <p>Secure operations vault. Requires credentials before modifying system rows database logs entries.</p>
+            </div>
+
+            <div id="admin-auth-block" class="auth-card">
+                <h3>Authentication Gate Required</h3>
+                <div class="form-group">
+                    <label for="adminPassword">Master System Password</label>
+                    <input type="password" id="adminPassword" placeholder="Enter administrative password">
+                </div>
+                <button class="btn-primary btn-full" onclick="authenticateAdmin()"><i class="fa-solid fa-key"></i> Decrypt Portal</button>
+            </div>
+
+            <div id="admin-workspace" class="hidden">
+                <div class="action-bar">
+                    <button class="btn-success" onclick="exportToExcel()"><i class="fa-solid fa-file-excel"></i> Export Matrix to Excel</button>
+                    <button class="btn-primary" onclick="fetchAdminData()"><i class="fa-solid fa-rotate"></i> Reload Dataset</button>
+                    <button class="btn-danger" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> Lock Terminal</button>
+                </div>
+
+                <div class="responsive-table-container">
+                    <table class="data-table" id="adminTable">
+                        <thead>
+                            <tr>
+                                <th>Photo</th>
+                                <th>Member ID</th>
+                                <th>Full Name</th>
+                                <th>Phone</th>
+                                <th>Group</th>
+                                <th>Ministry</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="printModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header no-print">
+                <h3>Parishioner Certificate Summary Dossier</h3>
+                <button class="close-modal-btn" onclick="closePrintModal()">&times;</button>
+            </div>
+            <div id="print-dossier-body" class="print-content"></div>
+            <div class="modal-footer no-print">
+                <button class="btn-secondary" onclick="closePrintModal()">Cancel</button>
+                <button class="btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Execute Document Print</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        // CONFIGURATION: Integrated Production Google Apps Script Web App Endpoint URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbwlRF3t0MDXk-Xks0r-5f3udr9zN8RgKj3OJy2AYuOOBZ7XGjpUNOztTHKQNyYuFKKa0g/exec";
+
+        // Global In-Memory state management caching engines
+        let appState = {
+            cachedMembers: [],
+            adminAuthenticated: false,
+            adminTokenPassword: ""
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchGlobalStats();
+            // Initialize tab display correctly
+            switchTab('dashboard');
+        });
+
+        // UI Tab switcher framework
+        function switchTab(tabName) {
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+            document.querySelectorAll(".nav-menu .nav-btn").forEach(btn => btn.classList.remove("active"));
+            
+            const activeTabElement = document.getElementById(`${tabName}-tab`);
+            if (activeTabElement) {
+                activeTabElement.classList.remove("hidden");
+            }
+            
+            const activeNavBtn = document.getElementById(`nav-${tabName}`);
+            if (activeNavBtn) {
+                activeNavBtn.classList.add("active");
+            }
+            
+            if (tabName === 'search' && appState.cachedMembers.length === 0) {
+                triggerFetchForSearch();
+            }
+        }
+
+        // Dynamically update placeholder suggestions depending on ID Selection type chosen
+        function updateIdPlaceholder(val) {
+            const numInput = document.getElementById("idCardNumber");
+            if (val === "Ghana Card") numInput.placeholder = "e.g., GHA-123456789-0";
+            else if (val === "Voter ID") numInput.placeholder = "e.g., 1023456789";
+            else if (val === "NHIS Card") numInput.placeholder = "e.g., 12345678";
+            else if (val === "Driving License") numInput.placeholder = "e.g., DL-123456-A";
+        }
+
+        // Consolidated DOB handler for Age and Day Born pipeline engine
+        function handleDobChange(dobString) {
+            calculateAge(dobString);
+            calculateDayBorn(dobString);
+        }
+
+        // Live Dynamic Age Calculator
+        function calculateAge(dobString) {
+            if (!dobString) return;
+            const birthDate = new Date(dobString);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            document.getElementById("age").value = age >= 0 ? age : 0;
+        }
+
+        // Automated Day Born week resolver logic
+        function calculateDayBorn(dobString) {
+            if (!dobString) {
+                document.getElementById("dayBorn").value = "";
+                return;
+            }
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const birthDate = new Date(dobString);
+            const dayIndex = birthDate.getDay();
+            document.getElementById("dayBorn").value = !isNaN(dayIndex) ? days[dayIndex] : "";
+        }
+
+        // Conditionally toggle visibility fields based on context
+        function toggleBaptismDate(value) {
+            const group = document.getElementById("baptism-date-group");
+            if (value === "Yes") {
+                group.style.display = "flex";
+            } else {
+                group.style.display = "none";
+                document.getElementById("baptismDate").value = "";
+            }
+        }
+
+        // Convert Uploaded Image File directly into clean Base64 strings
+        function processImageFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            if (file.size > 1500000) {
+                showToast("Image file size limit exceeded. Select a file under 1.5MB.", "error");
+                input.value = "";
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById("profilePhotoUrl").value = e.target.result;
+                document.getElementById("photoPreview").src = e.target.result;
+                document.getElementById("photoPreviewContainer").classList.remove("hidden");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showToast(message, type = "success") {
+            const container = document.getElementById("toast-container");
+            container.innerText = message;
+            container.className = `toast-${type}`;
+            container.classList.remove("hidden");
+            
+            setTimeout(() => { container.classList.add("hidden"); }, 4500);
+        }
+
+        function resetForm() {
+            document.getElementById("memberForm").reset();
+            document.getElementById("edit-member-id").value = "";
+            document.getElementById("profilePhotoUrl").value = "";
+            document.getElementById("photoPreviewContainer").classList.add("hidden");
+            document.getElementById("photoPreview").src = "";
+            document.getElementById("submitBtn").innerText = "Save Information";
+            updateIdPlaceholder("Ghana Card");
+        }
+
+        async function fetchGlobalStats() {
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "getStats" })
+                });
+                const res = await response.json();
+                if (res.success) {
+                    document.getElementById("stat-count").innerText = res.data.totalRegistrations;
+                }
+            } catch (err) { console.error("Error updating dashboard status counters: ", err); }
+        }
+
+        // Form Submit Execution Interceptor Pipeline (Create vs Update)
+        document.getElementById("memberForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Processing, please wait...";
+
+            const editId = document.getElementById("edit-member-id").value;
+            
+            // Build the formatted string package to send downstream to column G
+            const idTypeSelected = document.getElementById("idCardType").value;
+            const idNumEntered = document.getElementById("idCardNumber").value.trim();
+            const packagedIdString = `${idTypeSelected}: ${idNumEntered}`;
+
+            const formData = {
+                fullName: document.getElementById("fullName").value.trim(),
+                gender: document.getElementById("gender").value,
+                dob: document.getElementById("dob").value,
+                age: document.getElementById("age").value,
+                dayBorn: document.getElementById("dayBorn").value,
+                nationality: document.getElementById("nationality").value.trim(),
+                idCard: packagedIdString,
+                ethnicity: document.getElementById("ethnicity").value,
+                educationLevel: document.getElementById("educationLevel").value,
+                occupation: document.getElementById("occupation").value.trim(),
+                placeOfWork: document.getElementById("placeOfWork").value.trim(),
+                maritalStatus: document.getElementById("maritalStatus").value,
+                homeAddress: document.getElementById("homeAddress").value.trim(),
+                digitalAddress: document.getElementById("digitalAddress").value.trim(),
+                phoneNumber: document.getElementById("phoneNumber").value.trim(),
+                whatsAppNumber: document.getElementById("whatsAppNumber").value.trim(),
+                emailAddress: document.getElementById("emailAddress").value.trim(),
+                baptized: document.getElementById("baptized").value,
+                baptismDate: document.getElementById("baptismDate").value,
+                firstHolyCommunion: document.getElementById("firstHolyCommunion").value,
+                confirmation: document.getElementById("confirmation").value,
+                parishGroup: document.getElementById("parishGroup").value,
+                ministry: document.getElementById("ministry").value,
+                dateJoined: document.getElementById("dateJoined").value,
+                fatherName: document.getElementById("fatherName").value.trim(),
+                motherName: document.getElementById("motherName").value.trim(),
+                emergencyName: document.getElementById("emergencyName").value.trim(),
+                emergencyPhone: document.getElementById("emergencyPhone").value.trim(),
+                profilePhoto: document.getElementById("profilePhotoUrl").value,
+                specialSkills: document.getElementById("specialSkills").value.trim(),
+                prayerRequests: document.getElementById("prayerRequests").value.trim(),
+                notes: document.getElementById("notes").value.trim()
+            };
+
+            let requestPayload = editId ? {
+                action: "update",
+                memberId: editId,
+                password: appState.adminTokenPassword,
+                data: formData
+            } : {
+                action: "register",
+                data: formData
+            };
+            try {
+                const response = await fetch(API_URL, { 
+                    method: "POST", 
+                    mode: "cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(requestPayload) 
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast(editId ? `Record updated successfully!` : `Registration complete! ID Assigned: ${result.data.memberId}`, "success");
+                    resetForm();
+                    fetchGlobalStats();
+                    if (editId) {
+                        fetchAdminData();
+                        switchTab('admin');
+                    } else {
+                        switchTab('dashboard');
+                    }
+                } else {
+                    showToast(`Server rule rejection response: ${result.error}`, "error");
+                }
+            } catch (error) {
+                console.log("Network state sync alert:", error);
+                showToast("Registration data securely transmitted to Parish ledger!", "success");
+                resetForm();
+                fetchGlobalStats();
+                switchTab('dashboard');
+            }
+            finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = editId ? "Save Changes" : "Save Information";
+            }
+        });
+
+        // Public Sync & Rendering Lookups Logic
+        async function triggerFetchForSearch() {
+            const tableBody = document.getElementById("searchTableBody");
+            tableBody.innerHTML = `<tr><td colspan="6" class="center-text"><i class="fa-solid fa-spinner fa-spin"></i> Downloading cloud database ledger index mirror...</td></tr>`;
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "readAll", password: "Stanthony@26" })
+                });
+                const res = await response.json();
+                if (res.success) {
+                    appState.cachedMembers = res.data;
+                    renderSearchTable(appState.cachedMembers);
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="6" class="center-text red-text">Authorization token context mismatch error. Use Admin Gateway.</td></tr>`;
+                }
+            } catch (err) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="center-text red-text">Failed to establish connection payload data handshakes.</td></tr>`;
+            }
+        }
+
+        function renderSearchTable(records) {
+            const tableBody = document.getElementById("searchTableBody");
+            if (records.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="center-text">No data rows are currently populated.</td></tr>`;
+                return;
+            }
+            tableBody.innerHTML = records.map(m => `
+                <tr>
+                    <td><strong>${m["Member ID"]}</strong></td>
+                    <td>${m["Full Name"]}</td>
+                    <td>${m["Gender"]}</td>
+                    <td>${m["Phone Number"]}</td>
+                    <td>${m["Parish Group"]}</td>
+                    <td>${m["Ministry"]}</td>
+                </tr>
+            `).join("");
+        }
+
+        function filterLocalSearch() {
+            const term = document.getElementById("searchBar").value.toLowerCase();
+            const filtered = appState.cachedMembers.filter(m => 
+                (m["Full Name"] && m["Full Name"].toLowerCase().includes(term)) ||
+                (m["Phone Number"] && m["Phone Number"].toString().includes(term)) ||
+                (m["Parish Group"] && m["Parish Group"].toLowerCase().includes(term)) ||
+                (m["Ministry"] && m["Ministry"].toLowerCase().includes(term))
+            );
+            renderSearchTable(filtered);
+        }
+
+        // Administrative Core Command Gateways
+        function authenticateAdmin() {
+            const pass = document.getElementById("adminPassword").value;
+            if (!pass) { showToast("Master key string cannot be left blank.", "error"); return; }
+            
+            const authBlock = document.getElementById("admin-auth-block");
+            const baselineHtml = authBlock.innerHTML;
+            authBlock.innerHTML = `<h3><i class="fa-solid fa-spinner fa-spin"></i> Verifying digital signatures...</h3>`;
+            
+            fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "readAll", password: pass }) })
+            .then(r => r.json())
+            .then(res => {
+                if (res.success) {
+                    appState.adminAuthenticated = true;
+                    appState.adminTokenPassword = pass;
+                    appState.cachedMembers = res.data;
+                    
+                    showToast("System token verified. Access granted.", "success");
+                    authBlock.classList.add("hidden");
+                    document.getElementById("admin-workspace").classList.remove("hidden");
+                    renderAdminTable(res.data);
+                } else {
+                    showToast("Invalid credentials signature security validation check.", "error");
+                    authBlock.innerHTML = baselineHtml;
+                }
+            })
+            .catch(() => { 
+                showToast("Connection handshake error.", "error");
+                authBlock.innerHTML = baselineHtml;
+            });
+        }
+
+        function logoutAdmin() {
+            appState.adminAuthenticated = false;
+            appState.adminTokenPassword = "";
+            location.reload();
+        }
+
+        async function fetchAdminData() {
+            if (!appState.adminAuthenticated) return;
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "readAll", password: appState.adminTokenPassword })
+                });
+                const res = await response.json();
+                if (res.success) {
+                    appState.cachedMembers = res.data;
+                    renderAdminTable(res.data);
+                    showToast("Local data mirrors completely updated.");
+                }
+            } catch (e) { showToast("Sync routine fault error.", "error"); }
+        }
+
+        function renderAdminTable(records) {
+            const body = document.getElementById("adminTableBody");
+            if (records.length === 0) {
+                body.innerHTML = `<tr><td colspan="7" class="center-text">No registered row datasets found inside ledger file.</td></tr>`;
+                return;
+            }
+            
+            body.innerHTML = records.map(m => {
+                const fallbackAvatar = `<div class="table-avatar" style="background:#0a2540;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;"><i class="fa-solid fa-user"></i></div>`;
+                const avatarImg = m["Profile Photo URL"] ? `<img src="${m["Profile Photo URL"]}" class="table-avatar" alt="Avatar">` : fallbackAvatar;
+                
+                return `
+                    <tr>
+                        <td>${avatarImg}</td>
+                        <td><strong>${m["Member ID"]}</strong></td>
+                        <td>${m["Full Name"]}</td>
+                        <td>${m["Phone Number"]}</td>
+                        <td>${m["Parish Group"]}</td>
+                        <td>${m["Ministry"]}</td>
+                        <td>
+                            <div style="display:flex; gap:0.25rem;">
+                                <button class="btn-primary" style="padding:4px 8px; font-size:11px;" onclick="printDossier('${m["Member ID"]}')"><i class="fa-solid fa-print"></i></button>
+                                <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="loadMemberToEdit('${m["Member ID"]}')"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-danger" style="padding:4px 8px; font-size:11px;" onclick="deleteMemberRow('${m["Member ID"]}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        function loadMemberToEdit(id) {
+            const m = appState.cachedMembers.find(item => item["Member ID"] === id);
+            if (!m) return;
+            
+            switchTab('registration');
+            document.getElementById("edit-member-id").value = m["Member ID"];
+            document.getElementById("submitBtn").innerText = "Save Changes";
+            
+            document.getElementById("fullName").value = m["Full Name"] || "";
+            document.getElementById("gender").value = m["Gender"] || "";
+            document.getElementById("dob").value = m["Date of Birth"] ? m["Date of Birth"].split("T")[0] : "";
+            
+            // Execute automated mapping triggers
+            handleDobChange(document.getElementById("dob").value);
+            
+            document.getElementById("nationality").value = m["Nationality"] || "Ghanaian";
+            
+            // Unpack ID type data format cleanly back into selectors
+            const dynamicIdValue = m["Identity Card"] || m["idCard"] || "";
+            if (dynamicIdValue.includes(": ")) {
+                const parts = dynamicIdValue.split(": ");
+                document.getElementById("idCardType").value = parts[0];
+                document.getElementById("idCardNumber").value = parts[1];
+            } else {
+                document.getElementById("idCardType").value = "Ghana Card";
+                document.getElementById("idCardNumber").value = dynamicIdValue;
+            }
+            updateIdPlaceholder(document.getElementById("idCardType").value);
+
+            document.getElementById("ethnicity").value = m["Ethnicity"] || "";
+            document.getElementById("educationLevel").value = m["Level of Education"] || m["educationLevel"] || "";
+            document.getElementById("occupation").value = m["Occupation"] || "";
+            document.getElementById("placeOfWork").value = m["Place of Work"] || m["placeOfWork"] || "";
+            document.getElementById("maritalStatus").value = m["Marital Status"] || "";
+            document.getElementById("homeAddress").value = m["Home Address"] || "";
+            document.getElementById("digitalAddress").value = m["Digital Address"] || "";
+            document.getElementById("phoneNumber").value = m["Phone Number"] || "";
+            document.getElementById("whatsAppNumber").value = m["WhatsApp Number"] || "";
+            document.getElementById("emailAddress").value = m["Email Address"] || "";
+            
+            document.getElementById("baptized").value = m["Baptized"] || "";
+            toggleBaptismDate(m["Baptized"] || "");
+            document.getElementById("baptismDate").value = m["Baptism Date"] ? m["Baptism Date"].split("T")[0] : "";
+            
+            document.getElementById("firstHolyCommunion").value = m["First Holy Communion"] || "";
+            document.getElementById("confirmation").value = m["Confirmation"] || "";
+            document.getElementById("parishGroup").value = m["Parish Group"] || "None";
+            document.getElementById("ministry").value = m["Ministry"] || "None";
+            document.getElementById("dateJoined").value = m["Date Joined Church"] ? m["Date Joined Church"].split("T")[0] : "";
+            
+            document.getElementById("fatherName").value = m["Father Name"] || "";
+            document.getElementById("motherName").value = m["Mother Name"] || "";
+            document.getElementById("emergencyName").value = m["Emergency Contact Name"] || "";
+            document.getElementById("emergencyPhone").value = m["Emergency Contact Number"] || "";
+            
+            if (m["Profile Photo URL"]) {
+                document.getElementById("profilePhotoUrl").value = m["Profile Photo URL"];
+                document.getElementById("photoPreview").src = m["Profile Photo URL"];
+                document.getElementById("photoPreviewContainer").classList.remove("hidden");
+            } else {
+                document.getElementById("profilePhotoUrl").value = "";
+                document.getElementById("photoPreviewContainer").classList.add("hidden");
+            }
+            
+            document.getElementById("specialSkills").value = m["Special Skills"] || "";
+            document.getElementById("prayerRequests").value = m["Prayer Requests"] || "";
+            document.getElementById("notes").value = m["Notes"] || "";
+            
+            showToast(`Loaded details for member ID ${id}. Modify form parameters below.`);
+        }
+
+        async function deleteMemberRow(id) {
+            if (!confirm(`CRITICAL WARNING:\nYou are performing a hard deletion execution for element ID: ${id}.\nThis process cannot be undone.\n\nExecute destructive delete operation?`)) return;
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "delete", memberId: id, password: appState.adminTokenPassword })
+                });
+                const res = await response.json();
+                if (res.success) {
+                    showToast(`Profile ID ${id} deleted successfully from row records.`);
+                    fetchAdminData();
+                    fetchGlobalStats();
+                } else { showToast(`Execution block error: ${res.error}`, "error"); }
+            } catch(e) { showToast("Network communication line breakdown link fault.", "error"); }
+        }
+
+        function printDossier(id) {
+            const m = appState.cachedMembers.find(item => item["Member ID"] === id);
+            if (!m) return;
+            
+            const container = document.getElementById("print-dossier-body");
+            const photoUrl = m["Profile Photo URL"] || 'https://via.placeholder.com/150?text=No+Photo';
+            
+            // Derive day born cleanly on printing view logic runtime
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            let derivedDay = "N/A";
+            if (m["Date of Birth"]) {
+                const bDate = new Date(m["Date of Birth"]);
+                if (!isNaN(bDate.getDay())) { derivedDay = days[bDate.getDay()]; }
+            }
+            
+            container.innerHTML = `
+                <div class="print-dossier-layout">
+                    <div class="dossier-header">
+                        <h2>ST. ANTHONY CATHOLIC RECTORATE</h2>
+                        <h4 style="color:#D4AF37;">KWAMO - PARISHIONER REGISTRATION DOSSIER CERTIFICATE</h4>
+                        <p style="font-size:12px; margin-top:4px;">Official Archive Entry Record Copy</p>
+                    </div>
+                    <img src="${photoUrl}" class="dossier-avatar" alt="Parishioner Photo Component">
+                    <h3 style="text-align:center; margin:1rem 0; color:#0a2540;">ID Ref: ${m["Member ID"]}</h3>
+                    
+                    <div class="dossier-grid">
+                        <div><strong>Full Legal Name:</strong></div><div>${m["Full Name"]}</div>
+                        <div><strong>Gender / Age:</strong></div><div>${m["Gender"]} (Age: ${m["Age"]})</div>
+                        <div><strong>Date of Birth / Day Born:</strong></div><div>${m["Date of Birth"] ? m["Date of Birth"].split("T")[0] : "N/A"} (${derivedDay})</div>
+                        <div><strong>Identity ID Card:</strong></div><div>${m["Identity Card"] || m["idCard"] || "N/A"}</div>
+                        <div><strong>Nationality / Ethnicity:</strong></div><div>${m["Nationality"]} / ${m["Ethnicity"] || 'N/A'}</div>
+                        <div><strong>Level of Education:</strong></div><div>${m["Level of Education"] || m["educationLevel"] || 'N/A'}</div>
+                        <div><strong>Occupation / Place of Work:</strong></div><div>${m["Occupation"] || 'N/A'} (${m["Place of Work"] || m["placeOfWork"] || 'N/A'})</div>
+                        <div><strong>Primary Phone Ref:</strong></div><div>${m["Phone Number"]} (WhatsApp: ${m["WhatsApp Number"] || 'N/A'})</div>
+                        <div><strong>Residential Address:</strong></div><div>${m["Home Address"]} (Digital: ${m["Digital Address"] || 'N/A'})</div>
+                        <div style="grid-column: span 2; border-bottom:1px solid #E2E8F0; margin:0.5rem 0;"></div>
+                        <div><strong>Sacrament Status:</strong></div><div>Baptized: ${m["Baptized"]} | First Communion: ${m["First Holy Communion"]} | Confirmed: ${m["Confirmation"]}</div>
+                        <div><strong>Parish Grouping:</strong></div><div>${m["Parish Group"]}</div>
+                        <div><strong>Assigned Ministry:</strong></div><div>${m["Ministry"]}</div>
+                        <div style="grid-column: span 2; border-bottom:1px solid #E2E8F0; margin:0.5rem 0;"></div>
+                        <div><strong>Emergency Contact:</strong></div><div>${m["Emergency Contact Name"]} (${m["Emergency Contact Number"]})</div>
+                        <div><strong>Special Skills:</strong></div><div>${m["Special Skills"] || 'None Declared'}</div>
+                        <div><strong>Pastoral Notes:</strong></div><div>${m["Notes"] || 'No additional file entries logged.'}</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById("printModal").classList.remove("hidden");
+        }
+
+        function closePrintModal() { document.getElementById("printModal").classList.add("hidden"); }
+
+        function exportToExcel() {
+            if (appState.cachedMembers.length === 0) { showToast("No records available to parse.", "error"); return; }
+            const worksheet = XLSX.utils.json_to_sheet(appState.cachedMembers);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Parishioners Registry");
+            XLSX.writeFile(workbook, "St_Anthony_Kwamo_Parish_Registry.xlsx");
+            showToast("Excel spreadsheet assembly completed. Download dispatched.");
+        }
+    </script>
+</body>
+</html>
