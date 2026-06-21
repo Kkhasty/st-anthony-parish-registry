@@ -184,17 +184,20 @@
         .metric-info h3 { font-size: 2rem; color: var(--primary-blue); }
         .metric-info p { color: var(--text-light); font-size: 0.9rem; }
 
-        /* Advanced Analytics Layout Extra Grid Panels */
+        /* Compact Analytics Dashboard Grid Layout */
         .charts-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .chart-card {
             background-color: var(--pure-white);
-            padding: 1.5rem;
+            padding: 1.25rem;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             border: 1px solid var(--border-gray);
@@ -651,11 +654,11 @@
             <div class="charts-container">
                 <div class="chart-card">
                     <h4><i class="fa-solid fa-pie-chart"></i> Associations Demographic Split</h4>
-                    <canvas id="associationsChart" height="220"></canvas>
+                    <canvas id="associationsChart" height="160"></canvas>
                 </div>
                 <div class="chart-card">
                     <h4><i class="fa-solid fa-venus-mars"></i> Gender Composition Matrix</h4>
-                    <canvas id="genderChart" height="220"></canvas>
+                    <canvas id="genderChart" height="160"></canvas>
                 </div>
             </div>
         </section>
