@@ -663,8 +663,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="parishGroup">Parish Group/Association</label>
-                            <select id="parishGroup">
+                            <label for="parishGroup">Parish Group/Association <span class="input-tip">(Hold Ctrl/Cmd to select multiple)</span></label>
+                            <select id="parishGroup" multiple style="height: 120px;">
                                 <option value="None">None</option>
                                 <option value="Catholic Men Association">Catholic Men Association</option>
                                 <option value="St. Theresa of the Child Jesus">St. Theresa of the Child Jesus</option>
@@ -966,6 +966,9 @@
             document.getElementById("photoPreview").src = "";
             document.getElementById("submitBtn").innerText = "Save Information";
             updateIdPlaceholder("Ghana Card");
+            
+            // Explicitly uncheck multi-select options on form reset
+            Array.from(document.getElementById("parishGroup").options).forEach(opt => opt.selected = false);
         }
 
         async function fetchGlobalStats() {
@@ -1017,7 +1020,8 @@
                 baptismDate: document.getElementById("baptismDate").value,
                 firstHolyCommunion: document.getElementById("firstHolyCommunion").value,
                 confirmation: document.getElementById("confirmation").value,
-                parishGroup: document.getElementById("parishGroup").value,
+                // Combines multiple chosen selections down into a single parsed text string
+                parishGroup: Array.from(document.getElementById("parishGroup").selectedOptions).map(opt => opt.value).join(", "),
                 ministry: document.getElementById("ministry").value,
                 dateJoined: document.getElementById("dateJoined").value,
                 fatherName: document.getElementById("fatherName").value.trim(),
@@ -1257,7 +1261,13 @@
             
             document.getElementById("firstHolyCommunion").value = m["First Holy Communion"] || "";
             document.getElementById("confirmation").value = m["Confirmation"] || "";
-            document.getElementById("parishGroup").value = m["Parish Group"] || "None";
+            
+            // Multi-selection array parser engine mapping back to UI elements
+            const savedGroups = m["Parish Group"] ? m["Parish Group"].split(", ") : ["None"];
+            Array.from(document.getElementById("parishGroup").options).forEach(opt => {
+                opt.selected = savedGroups.includes(opt.value);
+            });
+
             document.getElementById("ministry").value = m["Ministry"] || "None";
             document.getElementById("dateJoined").value = m["Date Joined Church"] ? m["Date Joined Church"].split("T")[0] : "";
             
