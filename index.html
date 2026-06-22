@@ -446,6 +446,45 @@
             border: 1px solid var(--accent-gold);
         }
 
+        /* Profile Card Modal Specific Styles */
+        .profile-card-layout {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+        .profile-card-left {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid var(--border-gray);
+            padding-right: 1.5rem;
+        }
+        .profile-card-right {
+            flex: 2;
+        }
+        .profile-tab-header {
+            display: flex;
+            gap: 0.25rem;
+            border-bottom: 2px solid var(--border-gray);
+            margin-bottom: 1rem;
+        }
+        .profile-tab-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .profile-tab-btn.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--accent-gold);
+        }
+        .profile-data-row {
+            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+        }
+
         /* Buttons Utility Context */
         .form-actions, .action-bar {
             display: flex;
@@ -586,6 +625,8 @@
             .nav-menu { width: 100%; flex-wrap: wrap; justify-content: center; }
             .search-box { flex-direction: column; }
             .admin-controls-filter-box { flex-direction: column; align-items: stretch; }
+            .profile-card-layout { flex-direction: column; }
+            .profile-card-left { border-right: none; padding-right: 0; margin-bottom: 1rem; width: 100%; }
         }
 
         @media print {
@@ -679,7 +720,6 @@
             <nav class="nav-menu">
                 <button class="nav-btn active" id="nav-dashboard" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
                 <button class="nav-btn" id="nav-registration" onclick="switchTab('registration')"><i class="fa-solid fa-user-plus"></i> Register</button>
-                <!-- <button class="nav-btn" id="nav-search" onclick="switchTab('search')"><i class="fa-solid fa-magnifying-glass"></i> Search</button> -->
                 <button class="nav-btn admin-nav" id="nav-admin" onclick="switchTab('admin')"><i class="fa-solid fa-lock"></i> Admin Portal</button>
             </nav>
         </div>
@@ -1022,32 +1062,6 @@
             </form>
         </section>
 
-        <section id="search-tab" class="tab-content hidden">
-            <div class="section-title">
-                <h2><i class="fa-solid fa-magnifying-glass"></i> Registry Search Index</h2>
-                <p>Lookup parishioners instantly using live matching metrics.</p>
-            </div>
-            <div class="search-box">
-                <i class="fa-solid fa-search style-icon" style="align-self: center; color: var(--text-light)"></i>
-                <input type="text" id="publicSearchInput" placeholder="Filter by Name, Member ID, Group or Ministry..." onkeyup="executePublicSearch(this.value)">
-            </div>
-            <div class="responsive-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Member ID</th>
-                            <th>Full Name</th>
-                            <th>Gender</th>
-                            <th>Phone Number</th>
-                            <th>Group Association</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="searchTableBody"></tbody>
-                </table>
-            </div>
-        </section>
-
         <section id="admin-tab" class="tab-content hidden">
             <div class="section-title">
                 <h2><i class="fa-solid fa-lock"></i> Administration Terminal Gate</h2>
@@ -1064,20 +1078,38 @@
             </div>
 
             <div id="admin-workspace" class="hidden">
+                <!-- 1. Simple Data Analytics Grid Summary Section -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div style="background:#fff; padding:1.2rem; border-radius:8px; border:1px solid var(--border-gray); box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+                        <h4 style="color:var(--primary-blue); margin-bottom:1rem; font-size:0.95rem; text-transform:uppercase;"><i class="fa-solid fa-cross"></i> Sacraments Breakdown</h4>
+                        <div style="position:relative; height:180px;"><canvas id="chartSacraments"></canvas></div>
+                    </div>
+                    <div style="background:#fff; padding:1.2rem; border-radius:8px; border:1px solid var(--border-gray); box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+                        <h4 style="color:var(--primary-blue); margin-bottom:1rem; font-size:0.95rem; text-transform:uppercase;"><i class="fa-solid fa-cake-candles"></i> Demographics Bracket</h4>
+                        <div style="position:relative; height:180px;"><canvas id="chartAgeBrackets"></canvas></div>
+                    </div>
+                    <div style="background:#fff; padding:1.2rem; border-radius:8px; border:1px solid var(--border-gray); box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+                        <h4 style="color:var(--primary-blue); margin-bottom:1rem; font-size:0.95rem; text-transform:uppercase;"><i class="fa-solid fa-users-rectangle"></i> Top Associations</h4>
+                        <div style="position:relative; height:180px;"><canvas id="chartAssociations"></canvas></div>
+                    </div>
+                </div>
+
                 <div class="action-bar">
                     <button class="btn-success" onclick="exportToExcel()"><i class="fa-solid fa-file-excel"></i> Export Matrix to Excel</button>
                     <button class="btn-primary" onclick="fetchAdminData()"><i class="fa-solid fa-rotate"></i> Reload Dataset</button>
                     <button class="btn-danger" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> Lock Terminal</button>
-                    <button class="btn-primary" style="background-color: var(--accent-gold); color: var(--primary-blue);" onclick="printComplimentaryIDCards()"><i class="fa-solid fa-id-badge"></i> Print ID Cards (Business Size)</button>
+                    <button class="btn-primary" style="background-color: var(--accent-gold); color: var(--primary-blue);" onclick="printComplimentaryIDCards()"><i class="fa-solid fa-id-badge"></i> Print ID Cards</button>
                     
                     <div class="admin-controls-filter-box">
                         <i class="fa-solid fa-filter"></i>
-                        <input type="text" id="adminSearchInput" placeholder="Filter admin results..." onkeyup="filterAdminTable()">
+                        <input type="text" id="adminSearchInput" placeholder="Filter admin results by name, group..." onkeyup="filterAdminTable()">
                         <select id="adminGenderFilter" onchange="filterAdminTable()">
                             <option value="">All Genders</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
+                        <!-- 3. Bulk Messaging Group Action Trigger Link Launcher Button -->
+                        <button class="btn-success" onclick="launchGroupBroadcast()" style="white-space: nowrap;"><i class="fa-solid fa-bullhorn"></i> Broadcast to List</button>
                     </div>
                 </div>
                 
@@ -1131,6 +1163,56 @@
         </div>
     </div>
 
+    <!-- 2. Interactive Profile Card Window Component Structure Layout Markup -->
+    <div id="profileCardModal" class="modal-overlay hidden">
+        <div class="modal-card" style="max-width: 620px;">
+            <div class="modal-header">
+                <h3>Digital Profile Card View</h3>
+                <button class="close-modal-btn" onclick="closeProfileCardModal()">&times;</button>
+            </div>
+            <div class="profile-card-layout">
+                <div class="profile-card-left">
+                    <img id="pCardPhoto" src="" style="width:120px; height:120px; object-fit:cover; border-radius:50%; border:3px solid var(--accent-gold); margin-bottom:0.5rem;" alt="Member Photo">
+                    <h3 id="pCardName" style="color:var(--primary-blue); font-size:1.1rem; line-height:1.2;"></h3>
+                    <p id="pCardId" style="font-weight:bold; color:var(--accent-gold); font-size:0.85rem; margin-top:0.25rem;"></p>
+                </div>
+                <div class="profile-card-right">
+                    <div class="profile-tab-header">
+                        <button class="profile-tab-btn active" id="pTabBtn-personal" onclick="switchProfileCardTab('personal')">Personal</button>
+                        <button class="profile-tab-btn" id="pTabBtn-spiritual" onclick="switchProfileCardTab('spiritual')">Spiritual Life</button>
+                        <button class="profile-tab-btn" id="pTabBtn-emergency" onclick="switchProfileCardTab('emergency')">Emergency</button>
+                    </div>
+                    
+                    <div id="pTabContent-personal" class="p-tab-panel">
+                        <div class="profile-data-row"><strong>Gender:</strong> <span id="pc-gender"></span></div>
+                        <div class="profile-data-row"><strong>Age / Day Born:</strong> <span id="pc-age"></span> yrs (<span id="pc-dayborn"></span>)</div>
+                        <div class="profile-data-row"><strong>Phone Contact:</strong> <span id="pc-phone"></span></div>
+                        <div class="profile-data-row"><strong>Home Location:</strong> <span id="pc-address"></span></div>
+                        <div class="profile-data-row"><strong>Occupation:</strong> <span id="pc-job"></span></div>
+                    </div>
+                    
+                    <div id="pTabContent-spiritual" class="p-tab-panel hidden">
+                        <div class="profile-data-row"><strong>Baptized:</strong> <span id="pc-baptized"></span></div>
+                        <div class="profile-data-row"><strong>First Holy Communion:</strong> <span id="pc-communion"></span></div>
+                        <div class="profile-data-row"><strong>Confirmed:</strong> <span id="pc-confirmed"></span></div>
+                        <div class="profile-data-row"><strong>Associations:</strong> <span id="pc-group"></span></div>
+                        <div class="profile-data-row"><strong>Assigned Ministry:</strong> <span id="pc-ministry"></span></div>
+                    </div>
+                    
+                    <div id="pTabContent-emergency" class="p-tab-panel hidden">
+                        <div class="profile-data-row"><strong>Emergency Contact:</strong> <span id="pc-emerName"></span></div>
+                        <div class="profile-data-row"><strong>Contact Phone:</strong> <span id="pc-emerPhone"></span></div>
+                        <div class="profile-data-row"><strong>Talents/Skills:</strong> <span id="pc-skills"></span></div>
+                        <div class="profile-data-row"><strong>Pastoral Notes:</strong> <span id="pc-notes"></span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions" style="margin-top:1.5rem; border-top:1px solid var(--border-gray); padding-top:1rem;">
+                <button class="btn-secondary" onclick="closeProfileCardModal()">Close Preview</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwlRF3t0MDXk-Xks0r-5f3udr9zN8RgKj3OJy2AYuOOBZ7XGjpUNOztTHKQNyYuFKKa0g/exec";
@@ -1141,7 +1223,9 @@
             imageCropperInstance: null,
             adminAuthenticated: false,
             adminTokenPassword: "",
-            cachedMembers: []
+            cachedMembers: [],
+            activeProfileCardMember: null,
+            chartInstances: {}
         };
 
         window.addEventListener("DOMContentLoaded", () => {
@@ -1207,10 +1291,6 @@
             
             const activeNavBtn = document.getElementById(`nav-${tabName}`);
             if (activeNavBtn) { activeNavBtn.classList.add("active"); }
-
-            if (tabName === 'search' && appState.cachedMembers.length === 0) {
-                triggerFetchForSearch();
-            }
         }
 
         function navigateWizard(stepNum) {
@@ -1520,55 +1600,6 @@
             }
         });
 
-        async function triggerFetchForSearch() {
-            const tableBody = document.getElementById("searchTableBody");
-            tableBody.innerHTML = `<tr><td colspan="6" class="center-text"><i class="fa-solid fa-spinner fa-spin"></i> Downloading cloud database ledger index mirror...</td></tr>`;
-            try {
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    body: JSON.stringify({ action: "readAll", password: "Stanthony@26" })
-                });
-                const res = await response.json();
-                if (res.success) {
-                    appState.cachedMembers = res.data;
-                    renderSearchTable(appState.cachedMembers);
-                } else {
-                    tableBody.innerHTML = `<tr><td colspan="6" class="center-text red-text">Authorization token context mismatch error. Use Admin Gateway.</td></tr>`;
-                }
-            } catch (err) {
-                tableBody.innerHTML = `<tr><td colspan="6" class="center-text red-text">Failed to establish connection payload data handshakes.</td></tr>`;
-            }
-        }
-
-        function renderSearchTable(records) {
-            const tableBody = document.getElementById("searchTableBody");
-            if (records.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="6" class="center-text">No data rows are currently populated.</td></tr>`;
-                return;
-            }
-            tableBody.innerHTML = records.map(m => `
-                <tr>
-                    <td><strong>${m["Member ID"]}</strong></td>
-                    <td>${m["Full Name"]}</td>
-                    <td>${m["Gender"]}</td>
-                    <td>${m["Phone Number"]}</td>
-                    <td>${m["Parish Group"]}</td>
-                    <td><button class="btn-primary" style="padding:4px 8px; font-size:11px;" onclick="printDossier('${m["Member ID"]}')"><i class="fa-solid fa-print"></i> View</button></td>
-                </tr>
-            `).join('');
-        }
-
-        function executePublicSearch(term) {
-            const normalized = term.toLowerCase();
-            const filtered = appState.cachedMembers.filter(m => {
-                return (m["Full Name"] || "").toLowerCase().includes(normalized) ||
-                       (m["Member ID"] || "").toLowerCase().includes(normalized) ||
-                       (m["Parish Group"] || "").toLowerCase().includes(normalized) ||
-                       (m["Ministry"] || "").toLowerCase().includes(normalized);
-            });
-            renderSearchTable(filtered);
-        }
-
         function filterAdminTable() {
             const searchVal = document.getElementById("adminSearchInput").value.toLowerCase();
             const genderVal = document.getElementById("adminGenderFilter").value;
@@ -1646,6 +1677,10 @@
 
         function renderAdminTable(records) {
             const body = document.getElementById("adminTableBody");
+            
+            // 1. Refresh visual dashboard charts
+            renderAnalyticsCharts(records);
+
             if (records.length === 0) {
                 body.innerHTML = `<tr><td colspan="7" class="center-text">No registered row datasets found inside ledger file.</td></tr>`;
                 return;
@@ -1663,13 +1698,193 @@
                         <td>${m["Ministry"]}</td>
                         <td>
                             <div style="display:flex; gap:0.25rem;">
-                                <button class="btn-primary" style="padding:4px 8px; font-size:11px;" onclick="printDossier('${m["Member ID"]}')"><i class="fa-solid fa-print"></i></button>
-                                <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="loadMemberToEdit('${m["Member ID"]}')"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-primary" style="padding:4px 8px; font-size:11px;" onclick="viewDigitalProfileCard('${m["Member ID"]}')" title="Profile Card"><i class="fa-solid fa-id-card"></i></button>
+                                <button class="btn-primary" style="padding:4px 8px; font-size:11px; background-color:var(--accent-gold);" onclick="printDossier('${m["Member ID"]}')" title="Print Dossier"><i class="fa-solid fa-print"></i></button>
+                                <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="loadMemberToEdit('${m["Member ID"]}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-danger" style="padding:4px 8px; font-size:11px;" onclick="executeQuickDelete('${m["Member ID"]}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>
                 `;
             }).join('');
+        }
+
+        // 1. Simple Data Analytics Graph Compilation logic
+        function renderAnalyticsCharts(records) {
+            // Data aggregators
+            let baptizedCount = 0, unbaptizedCount = 0;
+            let youthCount = 0, adultCount = 0, elderCount = 0;
+            let associationMap = {};
+
+            records.forEach(m => {
+                // Sacrament Parse
+                if((m["Baptized"] || "").toLowerCase() === "yes") baptizedCount++;
+                else unbaptizedCount++;
+
+                // Age Brackets Parse
+                let age = parseInt(m["Age"] || 0);
+                if(age > 0 && age <= 24) youthCount++;
+                else if(age >= 25 && age <= 59) adultCount++;
+                else if(age >= 60) elderCount++;
+
+                // Associations Map Parse
+                let groups = (m["Parish Group"] || "None").split(",");
+                groups.forEach(g => {
+                    let cleaned = g.trim();
+                    if(cleaned && cleaned !== "None") {
+                        associationMap[cleaned] = (associationMap[cleaned] || 0) + 1;
+                    }
+                });
+            });
+
+            // Destroy historical instances safely
+            if(appState.chartInstances.sacraments) appState.chartInstances.sacraments.destroy();
+            if(appState.chartInstances.age) appState.chartInstances.age.destroy();
+            if(appState.chartInstances.associations) appState.chartInstances.associations.destroy();
+
+            const chartConfig = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } };
+
+            // Render Sacraments
+            appState.chartInstances.sacraments = new Chart(document.getElementById('chartSacraments'), {
+                type: 'doughnut',
+                data: { labels: ['Baptized', 'Unbaptized'], datasets: [{ data: [baptizedCount, unbaptizedCount], backgroundColor: ['#2F855A', '#C53030'] }] },
+                options: chartConfig
+            });
+
+            // Render Age Brackets
+            appState.chartInstances.age = new Chart(document.getElementById('chartAgeBrackets'), {
+                type: 'pie',
+                data: { labels: ['Youth (0-24)', 'Adults (25-59)', 'Elders (60+)'], datasets: [{ data: [youthCount, adultCount, elderCount], backgroundColor: ['#0A2540', '#D4AF37', '#718096'] }] },
+                options: chartConfig
+            });
+
+            // Render Top Associations 
+            let topAssocLabels = Object.keys(associationMap);
+            let topAssocData = Object.values(associationMap);
+            appState.chartInstances.associations = new Chart(document.getElementById('chartAssociations'), {
+                type: 'bar',
+                data: { labels: topAssocLabels.slice(0, 4), datasets: [{ label: 'Members', data: topAssocData.slice(0, 4), backgroundColor: '#0A2540' }] },
+                options: { ...chartConfig, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
+        }
+
+        // 2. Individual Profile View (Card Mode Tab Configuration Actions)
+        function viewDigitalProfileCard(memberId) {
+            const m = appState.cachedMembers.find(item => item["Member ID"] === memberId);
+            if(!m) return;
+            
+            appState.activeProfileCardMember = m;
+            const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%230a2540' d='M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C36.1 288 0 324.1 0 368.1V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-95.9c0-44-36.1-80.1-80.4-80.1z'/></svg>";
+            
+            document.getElementById("pCardPhoto").src = m["Profile Photo URL"] || fallbackImg;
+            document.getElementById("pCardName").innerText = m["Full Name"] || "N/A";
+            document.getElementById("pCardId").innerText = `ID Reference: ${m["Member ID"]}`;
+            
+            // Map Profile Data Blocks
+            document.getElementById("pc-gender").innerText = m["Gender"] || "N/A";
+            document.getElementById("pc-age").innerText = m["Age"] || "0";
+            document.getElementById("pc-dayborn").innerText = m["Day Born"] || "N/A";
+            document.getElementById("pc-phone").innerText = m["Phone Number"] || "N/A";
+            document.getElementById("pc-address").innerText = m["Residential Address"] || m["Home Address"] || "N/A";
+            document.getElementById("pc-job").innerText = m["Occupation"] || "N/A";
+            
+            document.getElementById("pc-baptized").innerText = m["Baptized"] || "No";
+            document.getElementById("pc-communion").innerText = m["First Holy Communion"] || "No";
+            document.getElementById("pc-confirmed").innerText = m["Confirmation"] || "No";
+            document.getElementById("pc-group").innerText = m["Parish Group"] || "None";
+            document.getElementById("pc-ministry").innerText = m["Ministry"] || "None";
+            
+            document.getElementById("pc-emerName").innerText = m["Emergency Contact Name"] || m["Emergency Contact Person"] || "N/A";
+            document.getElementById("pc-emerPhone").innerText = m["Emergency Contact Number"] || "N/A";
+            document.getElementById("pc-skills").innerText = m["Special Skills"] || "None";
+            document.getElementById("pc-notes").innerText = m["Notes"] || "No records.";
+
+            switchProfileCardTab('personal');
+            document.getElementById("profileCardModal").classList.remove("hidden");
+        }
+
+        function switchProfileCardTab(tabId) {
+            document.querySelectorAll(".p-tab-panel").forEach(p => p.classList.add("hidden"));
+            document.querySelectorAll(".profile-tab-btn").forEach(b => b.classList.remove("active"));
+            
+            document.getElementById(`pTabContent-${tabId}`).classList.remove("hidden");
+            document.getElementById(`pTabBtn-${tabId}`).classList.add("active");
+        }
+
+        function closeProfileCardModal() {
+            document.getElementById("profileCardModal").classList.add("hidden");
+        }
+
+        // 3. Bulk SMS & WhatsApp Multi-Broadcast Launcher Link Matrix Build Engine
+        function launchGroupBroadcast() {
+            const searchVal = document.getElementById("adminSearchInput").value.toLowerCase();
+            const genderVal = document.getElementById("adminGenderFilter").value;
+
+            // Generate subset from exactly what the admin sees
+            const filteredList = appState.cachedMembers.filter(m => {
+                const matchesSearch = (m["Full Name"] || "").toLowerCase().includes(searchVal) ||
+                                      (m["Member ID"] || "").toLowerCase().includes(searchVal) ||
+                                      (m["Parish Group"] || "").toLowerCase().includes(searchVal) ||
+                                      (m["Ministry"] || "").toLowerCase().includes(searchVal);
+                const matchesGender = !genderVal || (m["Gender"] || "").toLowerCase() === genderVal.toLowerCase();
+                return matchesSearch && matchesGender;
+            });
+
+            if(filteredList.length === 0) {
+                showToast("No active contact entries found inside current filtered workspace context.", "error");
+                return;
+            }
+
+            // Clean number configurations
+            const phoneNumbers = filteredList.map(m => {
+                let num = (m["WhatsApp Number"] || m["Phone Number"] || "").trim().replace(/\s+/g, '');
+                if(num.startsWith("0")) num = "233" + num.substring(1);
+                return num;
+            }).filter(num => num.length >= 9);
+
+            if(phoneNumbers.length === 0) {
+                showToast("No valid phone structures resolved from standard parsing variables.", "error");
+                return;
+            }
+
+            const commaSeparatedString = phoneNumbers.join(",");
+            const textMessageBody = encodeURIComponent("St. Anthony Rectorate Admin Notice: ");
+            
+            // Generate customized confirmation trigger overlay choice 
+            const opt = confirm(`Launch system communication node broadcast for ${phoneNumbers.length} parishioners?\n\nPress OK to open via WhatsApp Multi-Web Endpoint, Cancel to copy clean values to clipboard.`);
+            if(opt) {
+                window.open(`https://wa.me/?phone=${phoneNumbers[0]}&text=${textMessageBody}`, '_blank');
+            } else {
+                navigator.clipboard.writeText(commaSeparatedString);
+                showToast("Phone list copied to administrative clipboard array string!", "success");
+            }
+        }
+
+        // 4. Quick-Delete Database Action API Transaction Layer Controller Engine
+        async function executeQuickDelete(memberId) {
+            if(!confirm(`WARNING: Are you sure you want to completely erase member record ID: ${memberId} from the master archive? This change updates the live backend ledger immediately.`)) return;
+
+            showToast("Processing row delete instruction...", "success");
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        action: "delete",
+                        memberId: memberId,
+                        password: appState.adminTokenPassword
+                    })
+                });
+                const result = await response.json();
+                if(result.success) {
+                    showToast(`Record ${memberId} purged successfully from cloud ledger system variables.`, "success");
+                    fetchAdminData(); // Refresh list dynamically
+                } else {
+                    showToast(`Rejection notice: ${result.error}`, "error");
+                }
+            } catch(e) {
+                showToast("Network fault encountered, check backend Apps Script validation logs.", "error");
+            }
         }
 
         function loadMemberToEdit(memberId) {
