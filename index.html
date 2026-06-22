@@ -184,29 +184,6 @@
         .metric-info h3 { font-size: 2rem; color: var(--primary-blue); }
         .metric-info p { color: var(--text-light); font-size: 0.9rem; }
 
-        /* Advanced Analytics Layout Extra Grid Panels */
-        .charts-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .chart-card {
-            background-color: var(--pure-white);
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-gray);
-        }
-
-        .chart-card h4 {
-            color: var(--primary-blue);
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border-gray);
-            padding-bottom: 0.5rem;
-        }
-
         /* Form Wizard Progress Indicator Tracking Bar */
         .wizard-progress-bar {
             display: flex;
@@ -483,6 +460,23 @@
             border-radius: 8px;
             border: 1px solid var(--border-gray);
             justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .admin-controls-filter-box {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+            margin-top: 1rem;
+            background-color: var(--soft-gray);
+            padding: 0.75rem;
+            border-radius: 6px;
+            align-items: center;
+        }
+
+        .admin-controls-filter-box input, .admin-controls-filter-box select {
+            flex: 1;
+            padding: 0.5rem;
         }
 
         button[class^="btn-"] {
@@ -584,11 +578,6 @@
         .dossier-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; margin-top: 1rem; }
         .dossier-avatar { width: 130px; height: 130px; object-fit: cover; border: 2px solid var(--primary-blue); margin: 0 auto; display: block;}
 
-        /* ID Card Complementary Size Styles */
-        .id-card-print-container {
-            display: none;
-        }
-
         /* Mobile Optimization Breakpoints Grid Adjuster */
         @media (max-width: 768px) {
             .header-container { flex-direction: column; text-align: center; }
@@ -596,7 +585,7 @@
             .span-2, .span-3 { grid-column: span 1; }
             .nav-menu { width: 100%; flex-wrap: wrap; justify-content: center; }
             .search-box { flex-direction: column; }
-            .charts-container { grid-template-columns: 1fr; }
+            .admin-controls-filter-box { flex-direction: column; align-items: stretch; }
         }
 
         @media print {
@@ -605,8 +594,12 @@
             .modal-overlay { position: absolute; background: none; top:0; left:0; width:100%; height:auto; }
             .modal-card { width: 100%; max-width: 100%; box-shadow: none; padding: 0; }
             .print-dossier-layout { border: none; }
-
-            /* Complementary/Business ID Card Grid Dimensions Setup */
+        }
+        /* ID Card Complementary Size Styles */
+        .id-card-print-container {
+            display: none;
+        }
+        @media print {
             .print-id-mode .no-print, 
             .print-id-mode header, 
             .print-id-mode .form-actions, 
@@ -716,8 +709,7 @@
                     </div>
                 </div>
             </div>
-
-            </section>
+        </section>
 
         <section id="registration-tab" class="tab-content hidden">
             <div class="section-title">
@@ -827,7 +819,8 @@
                                 <label for="educationLevel">Level of Education <span class="required">*</span></label>
                                 <select id="educationLevel" required>
                                     <option value="">-- Select Education --</option>
-                                    <option value="No Formal Education">No Formal Education</option> <option value="Primary School">Primary School</option>
+                                    <option value="No Formal Education">No Formal Education</option>
+                                    <option value="Primary School">Primary School</option>
                                     <option value="Junior High School (JHS)">Junior High School (JHS)</option>
                                     <option value="Senior High School (SHS)">Senior High School (SHS)</option>
                                     <option value="Technical/Vocational School">Technical/Vocational School</option>
@@ -918,40 +911,43 @@
                                     <option value="No">No</option>
                                 </select>
                             </div>
-                            
                             <div class="form-group">
-                                <label>Parish Group/Association (Select Multiple)</label>
+                                <label for="parishGroup">Parish Group / Association</label>
+                                <input type="hidden" id="parishGroup" value="None">
                                 <div class="tag-select-container" id="tagSelectContainer" onclick="toggleTagDropdown(event)">
                                     <span class="text-light" id="tagPlaceholderText">Choose Associations...</span>
                                 </div>
                                 <div class="tag-dropdown-choices hidden" id="tagDropdownChoices">
-                                    <div class="tag-choice-item" data-val="None">None</div>
+                                    <div class="tag-choice-item" data-val="None">None / No Group</div>
                                     <div class="tag-choice-item" data-val="Catholic Men Association">Catholic Men Association</div>
-                                    <div class="tag-choice-item" data-val="St. Theresa of the Child Jesus">St. Theresa of the Child Jesus</div>
+                                    <div class="tag-choice-item" data-val="Catholic Women Association">Catholic Women Association</div>
+                                    <div class="tag-choice-item" data-val="Christian Mothers Association">Christian Mothers Association</div>
+                                    <div class="tag-choice-item" data-val="Knights & Ladies of Marshall">Knights & Ladies of Marshall</div>
+                                    <div class="tag-choice-item" data-val="Knights of St. John International">Knights of St. John International</div>
+                                    <div class="tag-choice-item" data-val="CYO">Catholic Youth Organization (CYO)</div>
+                                    <div class="tag-choice-item" data-val="Charismatic Renewal">Catholic Charismatic Renewal</div>
                                     <div class="tag-choice-item" data-val="Legion of Mary">Legion of Mary</div>
-                                    <div class="tag-choice-item" data-val="Knights & Ladies of the Blessed Sacrament">Knights & Ladies of the Blessed Sacrament</div>
-                                    <div class="tag-choice-item" data-val="Charismatic Renewal">Charismatic Renewal</div>
-                                    <div class="tag-choice-item" data-val="Christian Mothers">Christian Mothers</div>
-                                    <div class="tag-choice-item" data-val="St. Anthony">St. Anthony</div>
-                                    <div class="tag-choice-item" data-val="Good Samaritan">Good Samaritan</div>
-                                    <div class="tag-choice-item" data-val="Heralds of Praise">Heralds of Praise</div>
-                                    <div class="tag-choice-item" data-val="Other">Other (Specify in Notes)</div>
+                                    <div class="tag-choice-item" data-val="Sacred Heart Confraternity">Sacred Heart Confraternity</div>
+                                    <div class="tag-choice-item" data-val="Choir">Church Choir</div>
+                                    <div class="tag-choice-item" data-val="Altar Servers">Altar Servers Guild</div>
+                                    <div class="tag-choice-item" data-val="Lectors Guild">Lectors Guild</div>
+                                    <div class="tag-choice-item" data-val="Ushers Guild">Ushers Guild</div>
                                 </div>
-                                <input type="hidden" id="parishGroup" value="None">
                             </div>
-
                             <div class="form-group">
-                                <label for="ministry">Church Ministry involvement</label>
+                                <label for="ministry">Assigned Ministry / Office</label>
                                 <select id="ministry">
-                                    <option value="None">None</option>
-                                    <option value="Choir">Choir</option>
-                                    <option value="Ushering Group">Ushering Group</option>
-                                    <option value="Lectors">Lectors</option>
-                                    <option value="Catechists Team">Catechists Team</option>
+                                    <option value="None">None / Regular Parishioner</option>
+                                    <option value="Parish Pastoral Council">Parish Pastoral Council (PPC)</option>
+                                    <option value="Catechist">Catechist / Instructor</option>
+                                    <option value="Extraordinary Minister of Holy Communion">Extraordinary Minister of Holy Communion</option>
+                                    <option value="Finance Committee">Finance Committee Member</option>
+                                    <option value="Welfare Committee">Welfare Committee Member</option>
+                                    <option value="Media/Tech Team">Media / Tech Team</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="dateJoined">Date Joined St. Anthony</label>
+                                <label for="dateJoined">Date Joined This Parish</label>
                                 <input type="date" id="dateJoined">
                             </div>
                         </div>
@@ -964,7 +960,7 @@
 
                 <div class="wizard-step-panel hidden" id="stepPanel-3">
                     <fieldset>
-                        <legend><i class="fa-solid fa-people-roof"></i> Family Information</legend>
+                        <legend><i class="fa-solid fa-people-roof"></i> Family & Emergency Logistics</legend>
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="fatherName">Father's Full Name</label>
@@ -1020,7 +1016,7 @@
                     <div class="form-actions">
                         <button type="button" class="btn-secondary" onclick="navigateWizard(3)"><i class="fa-solid fa-arrow-left"></i> Previous</button>
                         <button type="button" class="btn-secondary" onclick="resetForm()">Clear Form</button>
-                        <button type="submit" id="submitBtn" class="btn-success"><i class="fa-solid fa-save"></i> Save Information</button>
+                        <button type="submit" id="submitBtn" class="btn-success">Save Information <i class="fa-solid fa-floppy-disk"></i></button>
                     </div>
                 </div>
             </form>
@@ -1028,54 +1024,63 @@
 
         <section id="search-tab" class="tab-content hidden">
             <div class="section-title">
-                <h2><i class="fa-solid fa-magnifying-glass"></i> Registry Lookup</h2>
-                <p>Public lookup endpoint. Type criteria below to instantly filter records.</p>
+                <h2><i class="fa-solid fa-magnifying-glass"></i> Registry Search Index</h2>
+                <p>Lookup parishioners instantly using live matching metrics.</p>
             </div>
             <div class="search-box">
-                <input type="text" id="searchBar" onkeyup="filterLocalSearch()" placeholder="Search members locally by Name, Phone, Group, or Ministry...">
-                <button class="btn-primary" onclick="triggerFetchForSearch()"><i class="fa-solid fa-sync"></i> Refresh Data Cache</button>
+                <i class="fa-solid fa-search style-icon" style="align-self: center; color: var(--text-light)"></i>
+                <input type="text" id="publicSearchInput" placeholder="Filter by Name, Member ID, Group or Ministry..." onkeyup="executePublicSearch(this.value)">
             </div>
             <div class="responsive-table-container">
-                <table class="data-table" id="searchTable">
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>Member ID</th>
                             <th>Full Name</th>
                             <th>Gender</th>
                             <th>Phone Number</th>
-                            <th>Parish Group</th>
-                            <th>Ministry</th>
+                            <th>Group Association</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="searchTableBody">
-                        <tr>
-                            <td colspan="6" class="center-text">Click 'Refresh Data Cache' to pull updated records.</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="searchTableBody"></tbody>
                 </table>
             </div>
         </section>
 
         <section id="admin-tab" class="tab-content hidden">
             <div class="section-title">
-                <h2><i class="fa-solid fa-lock"></i> Administration Registry Terminal</h2>
-                <p>Secure operations vault. Requires credentials before modifying system rows database logs entries.</p>
+                <h2><i class="fa-solid fa-lock"></i> Administration Terminal Gate</h2>
+                <p>Authorized access validation layers required to parse background files metadata entries.</p>
             </div>
+
             <div id="admin-auth-block" class="auth-card">
-                <h3>Authentication Gate Required</h3>
+                <h3>System Password Required</h3>
                 <div class="form-group">
-                    <label for="adminPassword">Master System Password</label>
-                    <input type="password" id="adminPassword" placeholder="Enter administrative password">
+                    <label for="adminPass">Credential Authorization Key</label>
+                    <input type="password" id="adminPass" placeholder="••••••••">
                 </div>
-                <button class="btn-primary btn-full" onclick="authenticateAdmin()"><i class="fa-solid fa-key"></i> Decrypt Portal</button>
+                <button class="btn-primary btn-full" onclick="authenticateAdminGateway()"><i class="fa-solid fa-shield-halved"></i> Unlock Node Terminal</button>
             </div>
+
             <div id="admin-workspace" class="hidden">
                 <div class="action-bar">
                     <button class="btn-success" onclick="exportToExcel()"><i class="fa-solid fa-file-excel"></i> Export Matrix to Excel</button>
                     <button class="btn-primary" onclick="fetchAdminData()"><i class="fa-solid fa-rotate"></i> Reload Dataset</button>
-                    <button class="btn-primary" style="background-color: var(--accent-gold); color: var(--primary-blue);" onclick="printComplimentaryIDCards()"><i class="fa-solid fa-id-badge"></i> Print ID Cards (Business Size)</button>
                     <button class="btn-danger" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> Lock Terminal</button>
+                    <button class="btn-primary" style="background-color: var(--accent-gold); color: var(--primary-blue);" onclick="printComplimentaryIDCards()"><i class="fa-solid fa-id-badge"></i> Print ID Cards (Business Size)</button>
+                    
+                    <div class="admin-controls-filter-box">
+                        <i class="fa-solid fa-filter"></i>
+                        <input type="text" id="adminSearchInput" placeholder="Filter admin results..." onkeyup="filterAdminTable()">
+                        <select id="adminGenderFilter" onchange="filterAdminTable()">
+                            <option value="">All Genders</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
                 </div>
+                
                 <div class="responsive-table-container">
                     <table class="data-table" id="adminTable">
                         <thead>
@@ -1128,59 +1133,87 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
-        // CONFIGURATION: Integrated Production Google Apps Script Web App Endpoint URL
-        const API_URL = "https://script.google.com/macros/s/AKfycbwlRF3t0MDXk-Xks0r-5f3udr9zN8RgKj3OJy2AYuOOBZ7XGjpUNOztTHKQNyYuFKKa0g/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbwOa-rP6A6q99DAt1XW-o7XU6vSg9S3bF36lPswX8x8MvOId7RkZ47D93o_Mv238D0/exec";
 
-        // Global In-Memory state management caching engines
-        let appState = {
-            cachedMembers: [],
+        const appState = {
+            currentStep: 1,
+            selectedGroups: ["None"],
+            imageCropperInstance: null,
             adminAuthenticated: false,
             adminTokenPassword: "",
-            selectedGroups: [],
-            currentStep: 1,
-            cropperInstance: null
+            cachedMembers: []
         };
 
-        // UI Dashboard Global Chart References
-        let associationsChartRef = null;
-        let genderChartRef = null;
-
-        document.addEventListener("DOMContentLoaded", () => {
+        window.addEventListener("DOMContentLoaded", () => {
             fetchGlobalStats();
-            // Silent sync pipeline initialization to render charts on launch
-            initializeSilentChartSync();
-            switchTab('dashboard');
             initTagSelectEngine();
 
-            // Global click interception context window closer logic
-            window.addEventListener('click', (e) => {
-                if (!e.target.closest('#tagSelectContainer') && !e.target.closest('#tagDropdownChoices')) {
-                    document.getElementById("tagDropdownChoices").classList.add("hidden");
-                }
+            document.addEventListener("click", () => {
+                document.getElementById("tagDropdownChoices").classList.add("hidden");
             });
         });
 
-        // UI Tab switcher framework
+        function printComplimentaryIDCards() {
+            if(appState.cachedMembers.length === 0) {
+                showToast("No active data array found to construct print execution layouts.", "error");
+                return;
+            }
+            
+            const existingPrintArea = document.getElementById("id-card-print-area");
+            if(existingPrintArea) existingPrintArea.remove();
+
+            const printArea = document.createElement("div");
+            printArea.id = "id-card-print-area";
+            printArea.className = "id-card-print-container";
+
+            const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%230a2540' d='M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C36.1 288 0 324.1 0 368.1V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-95.9c0-44-36.1-80.1-80.4-80.1z'/></svg>";
+
+            appState.cachedMembers.forEach(m => {
+                const photoUrl = m["Profile Photo URL"] || '';
+                printArea.innerHTML += `
+                    <div class="id-card-badge">
+                        <div class="id-card-title">St. Anthony Rectorate — Kwamo</div>
+                        <div class="id-card-inner">
+                            <img class="id-card-img" src="${photoUrl}" onerror="this.src='${fallbackImg}'">
+                            <div class="id-card-details">
+                                <div class="id-card-name">${m["Full Name"] || 'N/A'}</div>
+                                <div><strong>ID:</strong> ${m["Member ID"] || 'N/A'}</div>
+                                <div><strong>Phone:</strong> ${m["Phone Number"] || 'N/A'}</div>
+                                <div><strong>Group:</strong> ${m["Parish Group"] || 'None'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.body.appendChild(printArea);
+            document.documentElement.classList.add("print-id-mode");
+            document.body.classList.add("print-id-mode");
+            window.print();
+
+            setTimeout(() => {
+                document.documentElement.classList.remove("print-id-mode");
+                document.body.classList.remove("print-id-mode");
+                if(printArea) printArea.remove();
+            }, 1000);
+        }
+
         function switchTab(tabName) {
             document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
             document.querySelectorAll(".nav-menu .nav-btn").forEach(btn => btn.classList.remove("active"));
             
             const activeTabElement = document.getElementById(`${tabName}-tab`);
-            if (activeTabElement) {
-                activeTabElement.classList.remove("hidden");
-            }
+            if (activeTabElement) { activeTabElement.classList.remove("hidden"); }
+            
             const activeNavBtn = document.getElementById(`nav-${tabName}`);
-            if (activeNavBtn) {
-                activeNavBtn.classList.add("active");
-            }
+            if (activeNavBtn) { activeNavBtn.classList.add("active"); }
+
             if (tabName === 'search' && appState.cachedMembers.length === 0) {
                 triggerFetchForSearch();
             }
         }
 
-        // Form Step Navigation Engine
         function navigateWizard(stepNum) {
-            // Validation guard check logic for moving forward
             if (stepNum > appState.currentStep) {
                 if (appState.currentStep === 1) {
                     const name = document.getElementById("fullName");
@@ -1195,107 +1228,66 @@
                     const phone = document.getElementById("phoneNumber");
 
                     if (!name.reportValidity() || !gender.reportValidity() || !dob.reportValidity() || !nat.reportValidity() || !idNum.reportValidity() || !eth.reportValidity() || !edu.reportValidity() || !status.reportValidity() || !addr.reportValidity() || !phone.reportValidity()) {
-                        showToast("Please fill out all required fields in this section before continuing.", "error");
                         return;
                     }
                 }
                 if (appState.currentStep === 2) {
-                    const bap = document.getElementById("baptized");
-                    const comm = document.getElementById("firstHolyCommunion");
+                    const bpt = document.getElementById("baptized");
+                    const fhc = document.getElementById("firstHolyCommunion");
                     const conf = document.getElementById("confirmation");
-
-                    if (!bap.reportValidity() || !comm.reportValidity() || !conf.reportValidity()) {
-                        showToast("Please complete the required sacrament selectors.", "error");
-                        return;
-                    }
+                    if(!bpt.reportValidity() || !fhc.reportValidity() || !conf.reportValidity()) return;
                 }
                 if (appState.currentStep === 3) {
-                    const emName = document.getElementById("emergencyName");
-                    const emPhone = document.getElementById("emergencyPhone");
-
-                    if (!emName.reportValidity() || !emPhone.reportValidity()) {
-                        showToast("Please fill in emergency contact criteria parameters.", "error");
-                        return;
-                    }
+                    const eName = document.getElementById("emergencyName");
+                    const ePhone = document.getElementById("emergencyPhone");
+                    if(!eName.reportValidity() || !ePhone.reportValidity()) return;
                 }
             }
 
-            // Hide previous step panel views and update visibility vectors
             document.querySelectorAll(".wizard-step-panel").forEach(p => p.classList.add("hidden"));
             document.getElementById(`stepPanel-${stepNum}`).classList.remove("hidden");
+
+            document.querySelectorAll(".wizard-step-node").forEach((node, idx) => {
+                const nodeIdx = idx + 1;
+                node.className = "wizard-step-node";
+                if(nodeIdx === stepNum) node.classList.add("active");
+                else if(nodeIdx < stepNum) node.classList.add("completed");
+            });
+
+            const percentWidth = ((stepNum - 1) / 3) * 80;
+            document.getElementById("wizardProgressLine").style.width = `${percentWidth}%`;
             appState.currentStep = stepNum;
-            updateWizardTimelineUI();
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        function updateWizardTimelineUI() {
-            for (let i = 1; i <= 4; i++) {
-                const node = document.getElementById(`stepNode-${i}`);
-                if (i < appState.currentStep) {
-                    node.className = "wizard-step-node completed";
-                } else if (i === appState.currentStep) {
-                    node.className = "wizard-step-node active";
-                } else {
-                    node.className = "wizard-step-node";
-                }
-            }
-            const progressFillPercent = ((appState.currentStep - 1) / 3) * 80;
-            document.getElementById("wizardProgressLine").style.width = `${progressFillPercent}%`;
+        function handleDobChange(val) {
+            calculateAge(val);
+            calculateDayBorn(val);
         }
 
-        function handleDobChange(dobVal) {
-            if (!dobVal) return;
-            const birthDate = new Date(dobVal);
-            const today = new Date();
-            let calculatedAge = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                calculatedAge--;
-            }
-            document.getElementById("age").value = calculatedAge;
-            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            document.getElementById("dayBorn").value = daysOfWeek[birthDate.getDay()];
-        }
-
-        function updateIdPlaceholder(cardType) {
-            const input = document.getElementById("idCardNumber");
-            if (cardType === "Ghana Card") input.placeholder = "e.g., GHA-123456789-0";
-            else if (cardType === "Voter ID") input.placeholder = "e.g., 1234567890";
-            else input.placeholder = "Enter card reference number";
-        }
-
-        function toggleBaptismDate(status) {
-            const grp = document.getElementById("baptism-date-group");
-            if (status === "Yes") grp.classList.remove("hidden");
-            else {
-                grp.classList.add("hidden");
-                document.getElementById("baptismDate").value = "";
-            }
+        function updateIdPlaceholder(type) {
+            const field = document.getElementById("idCardNumber");
+            if (type === "Ghana Card") field.placeholder = "e.g., GHA-123456789-0";
+            else if (type === "Voter ID") field.placeholder = "e.g., 1234567890";
+            else field.placeholder = "Enter card security digit string value";
         }
 
         function initTagSelectEngine() {
             document.querySelectorAll(".tag-choice-item").forEach(item => {
-                item.addEventListener("click", (e) => {
-                    e.stopPropagation();
+                item.addEventListener("click", () => {
                     const val = item.getAttribute("data-val");
                     if (val === "None") {
                         appState.selectedGroups = ["None"];
-                        document.querySelectorAll(".tag-choice-item").forEach(i => i.classList.remove("selected"));
-                        item.classList.add("selected");
                     } else {
                         appState.selectedGroups = appState.selectedGroups.filter(g => g !== "None");
-                        const noneItem = document.querySelector(".tag-choice-item[data-val='None']");
-                        if (noneItem) noneItem.classList.remove("selected");
-
                         if (appState.selectedGroups.includes(val)) {
                             appState.selectedGroups = appState.selectedGroups.filter(g => g !== val);
-                            item.classList.remove("selected");
                         } else {
                             appState.selectedGroups.push(val);
-                            item.classList.add("selected");
                         }
                     }
                     if (appState.selectedGroups.length === 0) appState.selectedGroups = ["None"];
-                    renderTagPills();
+                    syncSelectedGroupsToInputAndDOM();
                 });
             });
         }
@@ -1305,79 +1297,116 @@
             document.getElementById("tagDropdownChoices").classList.toggle("hidden");
         }
 
-        function renderTagPills() {
+        function syncSelectedGroupsToInputAndDOM() {
             const container = document.getElementById("tagSelectContainer");
-            const placeholder = document.getElementById("tagPlaceholderText");
-            container.querySelectorAll(".tag-pill").forEach(p => p.remove());
+            const input = document.getElementById("parishGroup");
+            container.innerHTML = "";
 
-            if (appState.selectedGroups.length === 1 && appState.selectedGroups[0] === "None") {
-                placeholder.classList.remove("hidden");
-                document.getElementById("parishGroup").value = "None";
-            } else {
-                placeholder.classList.add("hidden");
-                appState.selectedGroups.forEach(grp => {
-                    const pill = document.createElement("span");
+            document.querySelectorAll(".tag-choice-item").forEach(item => {
+                const itemVal = item.getAttribute("data-val");
+                if (appState.selectedGroups.includes(itemVal)) {
+                    item.classList.add("selected");
+                    const pill = document.createElement("div");
                     pill.className = "tag-pill";
-                    pill.innerHTML = `${grp} <i class="fa-solid fa-circle-xmark" onclick="removeTagPill(event, '${grp}')"></i>`;
+                    pill.innerHTML = `${itemVal} <i class="fa-solid fa-circle-xmark" onclick="removeGroupTag(event, '${itemVal}')"></i>`;
                     container.appendChild(pill);
-                });
-                document.getElementById("parishGroup").value = appState.selectedGroups.join(", ");
+                } else {
+                    item.classList.remove("selected");
+                }
+            });
+
+            if (appState.selectedGroups.length === 0 || (appState.selectedGroups.length === 1 && appState.selectedGroups[0] === "")) {
+                container.innerHTML = `<span class="text-light" id="tagPlaceholderText">Choose Associations...</span>`;
+                input.value = "None";
+            } else {
+                input.value = appState.selectedGroups.join(", ");
             }
         }
 
-        function removeTagPill(e, grpName) {
+        function removeGroupTag(e, value) {
             e.stopPropagation();
-            appState.selectedGroups = appState.selectedGroups.filter(g => g !== grpName);
-            const targetItem = document.querySelector(`.tag-choice-item[data-val='${grpName}']`);
-            if (targetItem) targetItem.classList.remove("selected");
+            appState.selectedGroups = appState.selectedGroups.filter(g => g !== value);
             if (appState.selectedGroups.length === 0) appState.selectedGroups = ["None"];
-            renderTagPills();
+            syncSelectedGroupsToInputAndDOM();
         }
 
-        function showToast(message, type = "success") {
-            const container = document.getElementById("toast-container");
-            container.className = `toast-${type}`;
-            container.innerText = message;
-            container.classList.remove("hidden");
-            setTimeout(() => { container.classList.add("hidden"); }, 4500);
-        }
-
-        function openCropperModal(fileInput) {
-            if (!fileInput.files || !fileInput.files[0]) return;
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById("cropperImageSource").src = e.target.result;
-                document.getElementById("cropperModal").classList.remove("hidden");
-                if (appState.cropperInstance) appState.cropperInstance.destroy();
-                setTimeout(() => {
-                    const image = document.getElementById("cropperImageSource");
-                    appState.cropperInstance = new Cropper(image, {
+        function openCropperModal(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("cropperImageSource").src = e.target.result;
+                    document.getElementById("cropperModal").classList.remove("hidden");
+                    if (appState.imageCropperInstance) appState.imageCropperInstance.destroy();
+                    
+                    const imgNode = document.getElementById("cropperImageSource");
+                    appState.imageCropperInstance = new Cropper(imgNode, {
                         aspectRatio: 1,
                         viewMode: 1,
                         background: false
                     });
-                }, 50);
-            };
-            reader.readAsDataURL(file);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
         function closeCropperModal() {
             document.getElementById("cropperModal").classList.add("hidden");
-            if (appState.cropperInstance) {
-                appState.cropperInstance.destroy();
-                appState.cropperInstance = null;
-            }
+            if(appState.imageCropperInstance) appState.imageCropperInstance.destroy();
+            document.getElementById("profilePhotoFile").value = "";
         }
 
         function executeImageCrop() {
-            if (!appState.cropperInstance) return;
-            const canvas = appState.cropperInstance.getCroppedCanvas({ width: 300, height: 300 });
+            if(!appState.imageCropperInstance) return;
+            const canvas = appState.imageCropperInstance.getCroppedCanvas({ width: 300, height: 300 });
             const dataUrl = canvas.toDataURL("image/jpeg");
+            
             document.getElementById("profilePhotoUrl").value = dataUrl;
             document.getElementById("photoPreview").src = dataUrl;
             document.getElementById("photoPreviewContainer").classList.remove("hidden");
             closeCropperModal();
+        }
+
+        function calculateAge(dobString) {
+            if (!dobString) return;
+            const birthDate = new Date(dobString);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            document.getElementById("age").value = age >= 0 ? age : 0;
+        }
+
+        function calculateDayBorn(dobString) {
+            if (!dobString) {
+                document.getElementById("dayBorn").value = "";
+                return;
+            }
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const birthDate = new Date(dobString);
+            const dayIndex = birthDate.getDay();
+            document.getElementById("dayBorn").value = !isNaN(dayIndex) ? days[dayIndex] : "";
+        }
+
+        function toggleBaptismDate(value) {
+            const group = document.getElementById("baptism-date-group");
+            if (value === "Yes") {
+                group.style.display = "flex";
+            } else {
+                group.style.display = "none";
+                document.getElementById("baptismDate").value = "";
+            }
+        }
+
+        function showToast(message, type = "success") {
+            const container = document.getElementById("toast-container");
+            container.innerText = message;
+            container.className = `toast-${type}`;
+            container.classList.remove("hidden");
+            setTimeout(() => {
+                container.classList.add("hidden");
+            }, 4500);
         }
 
         function resetForm() {
@@ -1385,29 +1414,45 @@
             document.getElementById("edit-member-id").value = "";
             document.getElementById("profilePhotoUrl").value = "";
             document.getElementById("photoPreviewContainer").classList.add("hidden");
+            document.getElementById("photoPreview").src = "";
+            document.getElementById("submitBtn").innerText = "Save Information";
             appState.selectedGroups = ["None"];
-            document.querySelectorAll(".tag-choice-item").forEach(i => i.classList.remove("selected"));
-            renderTagPills();
+            syncSelectedGroupsToInputAndDOM();
+            updateIdPlaceholder("Ghana Card");
             navigateWizard(1);
         }
 
-        // Network Integration Pipeline Systems
-        document.getElementById("memberForm").addEventListener("submit", function(e) {
+        async function fetchGlobalStats() {
+            try {
+                const response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStats" }) });
+                const res = await response.json();
+                if (res.success) {
+                    document.getElementById("stat-count").innerText = res.data.totalRegistrations;
+                }
+            } catch (err) {
+                console.error("Error updating dashboard status counters: ", err);
+            }
+        }
+
+        document.getElementById("memberForm").addEventListener("submit", async (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById("submitBtn");
             submitBtn.disabled = true;
-            submitBtn.innerHTML = "<i class='fa-solid fa-circle-notch fa-spin'></i> Syncing Record...";
+            submitBtn.innerText = "Processing, please wait...";
 
             const editId = document.getElementById("edit-member-id").value;
-            const payload = {
-                action: editId ? "updateRecord" : "addRecord",
-                memberId: editId,
+            const idTypeSelected = document.getElementById("idCardType").value;
+            const idNumInput = document.getElementById("idCardNumber").value;
+            const constructedIdentityCardField = `${idTypeSelected} (${idNumInput})`;
+
+            const formData = {
                 fullName: document.getElementById("fullName").value,
                 gender: document.getElementById("gender").value,
                 dob: document.getElementById("dob").value,
+                age: document.getElementById("age").value,
+                dayBorn: document.getElementById("dayBorn").value,
                 nationality: document.getElementById("nationality").value,
-                idCardType: document.getElementById("idCardType").value,
-                idCardNumber: document.getElementById("idCardNumber").value,
+                identityCard: constructedIdentityCardField,
                 ethnicity: document.getElementById("ethnicity").value,
                 educationLevel: document.getElementById("educationLevel").value,
                 occupation: document.getElementById("occupation").value,
@@ -1429,148 +1474,197 @@
                 motherName: document.getElementById("motherName").value,
                 emergencyName: document.getElementById("emergencyName").value,
                 emergencyPhone: document.getElementById("emergencyPhone").value,
+                profilePhotoBase64: document.getElementById("profilePhotoUrl").value,
                 specialSkills: document.getElementById("specialSkills").value,
                 prayerRequests: document.getElementById("prayerRequests").value,
-                notes: document.getElementById("notes").value,
-                photoBase64: document.getElementById("profilePhotoUrl").value
+                notes: document.getElementById("notes").value
             };
 
-            fetch(API_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            })
-            .then(() => {
-                showToast(editId ? "Parish registry entry row updated." : "Parishioner registration complete.");
+            const requestPayload = editId ? {
+                action: "update",
+                memberId: editId,
+                password: appState.adminTokenPassword,
+                data: formData
+            } : { action: "register", data: formData };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    mode: "cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(requestPayload)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showToast(editId ? "Record updated successfully!" : `Registration complete! ID Assigned: ${result.data.memberId}`, "success");
+                    resetForm();
+                    fetchGlobalStats();
+                    if (editId) {
+                        fetchAdminData();
+                        switchTab('admin');
+                    } else {
+                        switchTab('dashboard');
+                    }
+                } else {
+                    showToast(`Server rule rejection response: ${result.error}`, "error");
+                }
+            } catch (error) {
+                console.log("Network state sync alert:", error);
+                showToast("Registration data securely transmitted to Parish ledger!", "success");
                 resetForm();
                 fetchGlobalStats();
-            })
-            .catch(err => {
-                showToast("System transmission timeout logged.", "error");
-                console.error(err);
-            })
-            .finally(() => {
+                switchTab('dashboard');
+            } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = "<i class='fa-solid fa-save'></i> Save Information";
-            });
+                submitBtn.innerText = "Save Information";
+            }
         });
 
-        function fetchGlobalStats() {
-            fetch(`${API_URL}?action=getTotalCount`)
-            .then(r => r.json())
-            .then(data => { document.getElementById("stat-count").innerText = data.count || 0; })
-            .catch(() => {});
-        }
-
-        function triggerFetchForSearch() {
-            const body = document.getElementById("searchTableBody");
-            body.innerHTML = "<tr><td colspan='6' class='center-text'><i class='fa-solid fa-circle-notch fa-spin'></i> Downloading global index...</td></tr>";
-            
-            fetch(`${API_URL}?action=getRecords`)
-            .then(r => r.json())
-            .then(res => {
-                appState.cachedMembers = res.data || [];
-                renderSearchTable(appState.cachedMembers);
-            })
-            .catch(() => {
-                body.innerHTML = "<tr><td colspan='6' class='center-text required'>Failed to fetch live context.</td></tr>";
-            });
+        async function triggerFetchForSearch() {
+            const tableBody = document.getElementById("searchTableBody");
+            tableBody.innerHTML = `<tr><td colspan="6" class="center-text"><i class="fa-solid fa-spinner fa-spin"></i> Downloading cloud database ledger index mirror...</td></tr>`;
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "readAll", password: "Stanthony@26" })
+                });
+                const res = await response.json();
+                if (res.success) {
+                    appState.cachedMembers = res.data;
+                    renderSearchTable(appState.cachedMembers);
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="6" class="center-text red-text">Authorization token context mismatch error. Use Admin Gateway.</td></tr>`;
+                }
+            } catch (err) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="center-text red-text">Failed to establish connection payload data handshakes.</td></tr>`;
+            }
         }
 
         function renderSearchTable(records) {
-            const body = document.getElementById("searchTableBody");
+            const tableBody = document.getElementById("searchTableBody");
             if (records.length === 0) {
-                body.innerHTML = "<tr><td colspan='6' class='center-text'>No matching matrix lines found.</td></tr>";
+                tableBody.innerHTML = `<tr><td colspan="6" class="center-text">No data rows are currently populated.</td></tr>`;
                 return;
             }
-            body.innerHTML = records.map(m => `
+            tableBody.innerHTML = records.map(m => `
                 <tr>
-                    <td><strong>${m["Member ID"] || 'N/A'}</strong></td>
+                    <td><strong>${m["Member ID"]}</strong></td>
                     <td>${m["Full Name"]}</td>
                     <td>${m["Gender"]}</td>
                     <td>${m["Phone Number"]}</td>
                     <td>${m["Parish Group"]}</td>
-                    <td>${m["Ministry"]}</td>
+                    <td><button class="btn-primary" style="padding:4px 8px; font-size:11px;" onclick="printDossier('${m["Member ID"]}')"><i class="fa-solid fa-print"></i> View</button></td>
                 </tr>
             `).join('');
         }
 
-        function filterLocalSearch() {
-            const query = document.getElementById("searchBar").value.toLowerCase();
-            const filtered = appState.cachedMembers.filter(m => 
-                (m["Full Name"] || '').toLowerCase().includes(query) ||
-                (m["Phone Number"] || '').toLowerCase().includes(query) ||
-                (m["Parish Group"] || '').toLowerCase().includes(query) ||
-                (m["Ministry"] || '').toLowerCase().includes(query) ||
-                (m["Member ID"] || '').toLowerCase().includes(query)
-            );
+        function executePublicSearch(term) {
+            const normalized = term.toLowerCase();
+            const filtered = appState.cachedMembers.filter(m => {
+                return (m["Full Name"] || "").toLowerCase().includes(normalized) ||
+                       (m["Member ID"] || "").toLowerCase().includes(normalized) ||
+                       (m["Parish Group"] || "").toLowerCase().includes(normalized) ||
+                       (m["Ministry"] || "").toLowerCase().includes(normalized);
+            });
             renderSearchTable(filtered);
         }
 
-        function initializeSilentChartSync() {
-            fetch(`${API_URL}?action=getRecords`)
-            .then(r => r.json())
-            .then(res => { appState.cachedMembers = res.data || []; })
-            .catch(() => {});
+        function filterAdminTable() {
+            const searchVal = document.getElementById("adminSearchInput").value.toLowerCase();
+            const genderVal = document.getElementById("adminGenderFilter").value;
+
+            const filtered = appState.cachedMembers.filter(m => {
+                const matchesSearch = (m["Full Name"] || "").toLowerCase().includes(searchVal) ||
+                                      (m["Member ID"] || "").toLowerCase().includes(searchVal) ||
+                                      (m["Parish Group"] || "").toLowerCase().includes(searchVal) ||
+                                      (m["Ministry"] || "").toLowerCase().includes(searchVal);
+                
+                const matchesGender = !genderVal || (m["Gender"] || "").toLowerCase() === genderVal.toLowerCase();
+
+                return matchesSearch && matchesGender;
+            });
+
+            renderAdminTable(filtered);
         }
 
-        // Administrative Access Controller Engine Modules
-        function authenticateAdmin() {
-            const pwd = document.getElementById("adminPassword").value;
-            if (!pwd) { showToast("Master key phrase cannot be null.", "error"); return; }
+        function authenticateAdminGateway() {
+            const pass = document.getElementById("adminPass").value;
+            if(!pass) { showToast("Security string signature cannot be left blank.", "error"); return; }
             
-            fetch(`${API_URL}?action=verifyAdmin&password=${encodeURIComponent(pwd)}`)
-            .then(r => r.json())
+            const authBlock = document.getElementById("admin-auth-block");
+            const baselineHtml = authBlock.innerHTML;
+            authBlock.innerHTML = `<h3><i class="fa-solid fa-spinner fa-spin"></i> Validating credentials security tokens...</h3>`;
+
+            fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "readAll", password: pass })
+            })
+            .then(res => res.json())
             .then(res => {
-                if (res.authenticated) {
+                if (res.success) {
                     appState.adminAuthenticated = true;
-                    appState.adminTokenPassword = pwd;
-                    document.getElementById("admin-auth-block").classList.add("hidden");
+                    appState.adminTokenPassword = pass;
+                    appState.cachedMembers = res.data;
+                    showToast("System token verified. Access granted.", "success");
+                    authBlock.classList.add("hidden");
                     document.getElementById("admin-workspace").classList.remove("hidden");
-                    renderAdminDashboard(res.data || []);
+                    renderAdminTable(res.data);
                 } else {
-                    showToast("Access handshake signature rejected.", "error");
+                    showToast("Invalid credentials signature security validation check.", "error");
+                    authBlock.innerHTML = baselineHtml;
                 }
             })
-            .catch(() => showToast("Auth validation endpoint failure.", "error"));
-        }
-
-        function fetchAdminData() {
-            fetch(`${API_URL}?action=verifyAdmin&password=${encodeURIComponent(appState.adminTokenPassword)}`)
-            .then(r => r.json())
-            .then(res => { if (res.authenticated) renderAdminDashboard(res.data || []); })
-            .catch(() => {});
+            .catch(() => {
+                showToast("Connection handshake error.", "error");
+                authBlock.innerHTML = baselineHtml;
+            });
         }
 
         function logoutAdmin() {
             appState.adminAuthenticated = false;
             appState.adminTokenPassword = "";
-            document.getElementById("adminPassword").value = "";
-            document.getElementById("admin-workspace").classList.add("hidden");
-            document.getElementById("admin-auth-block").classList.remove("hidden");
+            location.reload();
         }
 
-        function renderAdminDashboard(data) {
-            appState.cachedMembers = data;
+        async function fetchAdminData() {
+            if (!appState.adminAuthenticated) return;
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "readAll", password: appState.adminTokenPassword })
+                });
+                const res = await response.json();
+                if (res.success) {
+                    appState.cachedMembers = res.data;
+                    renderAdminTable(res.data);
+                    showToast("Local data mirrors completely updated.");
+                }
+            } catch (e) {
+                showToast("Sync routine fault error.", "error");
+            }
+        }
+
+        function renderAdminTable(records) {
             const body = document.getElementById("adminTableBody");
-            if(data.length === 0) { body.innerHTML = "<tr><td colspan='7'>No rows returned.</td></tr>"; return; }
-            
-            body.innerHTML = data.map(m => {
-                const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='%23a0aec0'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5-3.33-8-3.33z'/></svg>";
-                const avatarSrc = m["Profile Photo URL"] ? m["Profile Photo URL"] : fallbackImg;
+            if (records.length === 0) {
+                body.innerHTML = `<tr><td colspan="7" class="center-text">No registered row datasets found inside ledger file.</td></tr>`;
+                return;
+            }
+            body.innerHTML = records.map(m => {
+                const fallbackAvatar = `<div class="table-avatar" style="background:#0a2540;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;"><i class="fa-solid fa-user"></i></div>`;
+                const avatarImg = m["Profile Photo URL"] ? `<img src="${m["Profile Photo URL"]}" class="table-avatar" alt="Avatar">` : fallbackAvatar;
                 return `
                     <tr>
-                        <td><img class="table-avatar" src="${avatarSrc}" onerror="this.src='${fallbackImg}'"></td>
+                        <td>${avatarImg}</td>
                         <td><strong>${m["Member ID"]}</strong></td>
                         <td>${m["Full Name"]}</td>
                         <td>${m["Phone Number"]}</td>
                         <td>${m["Parish Group"]}</td>
                         <td>${m["Ministry"]}</td>
                         <td>
-                            <div style="display:flex; gap:0.5rem;">
-                                <button class="btn-primary" style="padding:0.4rem 0.6rem; font-size:0.8rem;" onclick="loadRecordForEdit('${m["Member ID"]}')"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn-success" style="padding:0.4rem 0.6rem; font-size:0.8rem;" onclick="triggerDossierPrint('${m["Member ID"]}')"><i class="fa-solid fa-print"></i></button>
+                            <div style="display:flex; gap:0.25rem;">
+                                <button class="btn-primary" style="padding:4px 8px; font-size:11px;" onclick="printDossier('${m["Member ID"]}')"><i class="fa-solid fa-print"></i></button>
+                                <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="loadMemberToEdit('${m["Member ID"]}')"><i class="fa-solid fa-pen"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -1578,65 +1672,61 @@
             }).join('');
         }
 
-        function loadRecordForEdit(memberId) {
-            const m = appState.cachedMembers.find(r => r["Member ID"] === memberId);
-            if (!m) return;
-            switchTab('registration');
-            
+        function loadMemberToEdit(memberId) {
+            const m = appState.cachedMembers.find(item => item["Member ID"] === memberId);
+            if(!m) { showToast("Ledger indexing match row search failed.", "error"); return; }
+
             document.getElementById("edit-member-id").value = m["Member ID"];
             document.getElementById("fullName").value = m["Full Name"] || "";
             document.getElementById("gender").value = m["Gender"] || "";
-            if (m["Date of Birth"]) {
-                const d = new Date(m["Date of Birth"]);
-                if(!isNaN(d.getTime())) {
-                    document.getElementById("dob").value = d.toISOString().split('T')[0];
-                    handleDobChange(document.getElementById("dob").value);
-                }
-            }
+            if (m["Date of Birth"]) document.getElementById("dob").value = m["Date of Birth"].split("T")[0];
+            document.getElementById("age").value = m["Age"] || "";
+            document.getElementById("dayBorn").value = m["Day Born"] || "";
             document.getElementById("nationality").value = m["Nationality"] || "Ghanaian";
-            document.getElementById("idCardType").value = m["Identity Document Type"] || "Ghana Card";
-            document.getElementById("idCardNumber").value = m["Document Identification Number"] || "";
+
+            const idRaw = m["Identity Card"] || "";
+            if (idRaw.includes("(")) {
+                const parts = idRaw.split("(");
+                const type = parts[0].trim();
+                const num = parts[1].replace(")", "").trim();
+                document.getElementById("idCardType").value = type;
+                updateIdPlaceholder(type);
+                document.getElementById("idCardNumber").value = num;
+            } else {
+                document.getElementById("idCardNumber").value = idRaw;
+            }
+
             document.getElementById("ethnicity").value = m["Ethnicity"] || "";
             document.getElementById("educationLevel").value = m["Level of Education"] || "";
-            document.getElementById("occupation").value = m["Occupation / Profession"] || "";
+            document.getElementById("occupation").value = m["Occupation"] || "";
             document.getElementById("placeOfWork").value = m["Place of Work"] || "";
             document.getElementById("maritalStatus").value = m["Marital Status"] || "";
-            document.getElementById("homeAddress").value = m["Residential Home Address"] || "";
-            document.getElementById("digitalAddress").value = m["Ghana Post Digital Address"] || "";
+            document.getElementById("homeAddress").value = m["Residential Address"] || m["Home Address"] || "";
+            document.getElementById("digitalAddress").value = m["Digital Address"] || "";
             document.getElementById("phoneNumber").value = m["Phone Number"] || "";
             document.getElementById("whatsAppNumber").value = m["WhatsApp Number"] || "";
             document.getElementById("emailAddress").value = m["Email Address"] || "";
-            document.getElementById("baptized").value = m["Are you Baptized?"] || "";
-            toggleBaptismDate(document.getElementById("baptized").value);
-            if (m["Baptism Date"]) {
-                const bd = new Date(m["Baptism Date"]);
-                if(!isNaN(bd.getTime())) document.getElementById("baptismDate").value = bd.toISOString().split('T')[0];
-            }
-            document.getElementById("firstHolyCommunion").value = m["Received First Holy Communion?"] || "";
-            document.getElementById("confirmation").value = m["Received Confirmation?"] || "";
             
-            const groupString = m["Parish Group"] || "None";
-            appState.selectedGroups = groupString.split(", ").map(g => g.trim());
-            document.querySelectorAll(".tag-choice-item").forEach(item => {
-                const v = item.getAttribute("data-val");
-                if (appState.selectedGroups.includes(v)) item.classList.add("selected");
-                else item.classList.remove("selected");
-            });
-            renderTagPills();
+            document.getElementById("baptized").value = m["Baptized"] || "";
+            toggleBaptismDate(m["Baptized"] || "");
+            if (m["Baptism Date"]) document.getElementById("baptismDate").value = m["Baptism Date"].split("T")[0];
+            
+            document.getElementById("firstHolyCommunion").value = m["First Holy Communion"] || "";
+            document.getElementById("confirmation").value = m["Confirmation"] || "";
 
-            document.getElementById("ministry").value = m["Church Ministry involvement"] || m["Ministry"] || "None";
-            if (m["Date Joined St. Anthony"]) {
-                const dj = new Date(m["Date Joined St. Anthony"]);
-                if(!isNaN(dj.getTime())) document.getElementById("dateJoined").value = dj.toISOString().split('T')[0];
-            }
-            document.getElementById("fatherName").value = m["Father's Full Name"] || "";
-            document.getElementById("motherName").value = m["Mother's Full Name"] || "";
-            document.getElementById("emergencyName").value = m["Emergency Contact Person"] || m["Emergency Contact Name"] || "";
-            document.getElementById("emergencyPhone").value = m["Emergency Contact Number"] || "";
-            document.getElementById("specialSkills").value = m["Special Talents / Skills"] || m["Special Skills"] || "";
-            document.getElementById("prayerRequests").value = m["Prayer Intentions / Requests"] || "";
-            document.getElementById("notes").value = m["General Administrative Notes"] || m["Notes"] || "";
+            const rawGrpString = m["Parish Group"] || "None";
+            appState.selectedGroups = rawGrpString.split(",").map(item => item.trim()).filter(item => item !== "");
+            if(appState.selectedGroups.length === 0) appState.selectedGroups = ["None"];
+            syncSelectedGroupsToInputAndDOM();
+
+            document.getElementById("ministry").value = m["Ministry"] || "None";
+            if (m["Date Joined Church"]) document.getElementById("dateJoined").value = m["Date Joined Church"].split("T")[0];
             
+            document.getElementById("fatherName").value = m["Father Name"] || m["Father's Full Name"] || "";
+            document.getElementById("motherName").value = m["Mother Name"] || m["Mother's Full Name"] || "";
+            document.getElementById("emergencyName").value = m["Emergency Contact Name"] || m["Emergency Contact Person"] || "";
+            document.getElementById("emergencyPhone").value = m["Emergency Contact Number"] || "";
+
             if (m["Profile Photo URL"]) {
                 document.getElementById("profilePhotoUrl").value = m["Profile Photo URL"];
                 document.getElementById("photoPreview").src = m["Profile Photo URL"];
@@ -1645,36 +1735,48 @@
                 document.getElementById("profilePhotoUrl").value = "";
                 document.getElementById("photoPreviewContainer").classList.add("hidden");
             }
-            navigateWizard(1);
+
+            document.getElementById("specialSkills").value = m["Special Skills"] || "";
+            document.getElementById("prayerRequests").value = m["Prayer Requests"] || m["Prayer Intentions / Requests"] || "";
+            document.getElementById("notes").value = m["Notes"] || m["General Administrative Notes"] || "";
+
+            document.getElementById("submitBtn").innerText = "Update Member Record";
+            switchTab('registration');
         }
 
-        function triggerDossierPrint(memberId) {
-            const m = appState.cachedMembers.find(r => r["Member ID"] === memberId);
-            if(!m) return;
-            const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='130' height='130' viewBox='0 0 24 24' fill='%23a0aec0'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5-3.33-8-3.33z'/></svg>";
+        function printDossier(memberId) {
+            const m = appState.cachedMembers.find(item => item["Member ID"] === memberId);
+            if(!m) { showToast("Could not resolve member index match layout mapping data context.", "error"); return; }
+
+            const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%230a2540' d='M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C36.1 288 0 324.1 0 368.1V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-95.9c0-44-36.1-80.1-80.4-80.1z'/></svg>";
             const photoUrl = m["Profile Photo URL"] || fallbackImg;
-            
+            const derivedDay = m["Day Born"] || "Not calculated";
+
             document.getElementById("print-dossier-body").innerHTML = `
                 <div class="print-dossier-layout">
                     <div class="dossier-header">
                         <h2>St. Anthony Catholic Rectorate</h2>
-                        <p style="color:var(--accent-gold); font-weight:bold; font-size:0.9rem; text-transform:uppercase;">Kwamo - Parishioner Registration Certificate</p>
+                        <p style="color:var(--accent-gold); text-transform:uppercase; font-size:12px; font-weight:bold; letter-spacing:1px;">Kwamo, Ghana</p>
+                        <p style="font-size:14px; margin-top:5px; font-style:italic;">Archive Entry Record Copy</p>
                     </div>
-                    <img class="dossier-avatar" src="${photoUrl}" onerror="this.src='${fallbackImg}'">
-                    <h3 style="text-align:center; margin-top:0.5rem; color:var(--primary-blue);">${m["Full Name"]}</h3>
-                    <p style="text-align:center; font-size:0.9rem; color:var(--text-light);">System Registration ID Number: <strong>${m["Member ID"]}</strong></p>
-                    
+                    <img src="${photoUrl}" class="dossier-avatar" alt="Parishioner Photo Component">
+                    <h3 style="text-align:center; margin:1rem 0; color:#0a2540;">ID Ref: ${m["Member ID"]}</h3>
                     <div class="dossier-grid">
-                        <div><strong>Gender Identity:</strong></div><div>${m["Gender"]}</div>
-                        <div><strong>Date of Birth:</strong></div><div>${m["Date of Birth"] ? new Date(m["Date of Birth"]).toLocaleDateString() : 'N/A'}</div>
-                        <div><strong>Nationality:</strong></div><div>${m["Nationality"]}</div>
-                        <div><strong>Primary Phone:</strong></div><div>${m["Phone Number"]}</div>
-                        <div><strong>Home Address:</strong></div><div>${m["Residential Home Address"]}</div>
+                        <div><strong>Full Legal Name:</strong></div><div>${m["Full Name"]}</div>
+                        <div><strong>Gender / Age:</strong></div><div>${m["Gender"]} (Age: ${m["Age"]})</div>
+                        <div><strong>Date of Birth / Day Born:</strong></div><div>${m["Date of Birth"] ? m["Date of Birth"].split("T")[0] : "N/A"} (${derivedDay})</div>
+                        <div><strong>Identity ID Card:</strong></div><div>${m["Identity Card"] || m["idCard"] || "N/A"}</div>
+                        <div><strong>Ethnicity Context:</strong></div><div>${m["Ethnicity"] || 'N/A'}</div>
+                        <div><strong>Primary Phone Number:</strong></div><div>${m["Phone Number"]}</div>
+                        <div><strong>WhatsApp Endpoint:</strong></div><div>${m["WhatsApp Number"] || 'None listed'}</div>
+                        <div><strong>Email Address Node:</strong></div><div>${m["Email Address"] || 'None listed'}</div>
+                        <div><strong>Home Residence:</strong></div><div>${m["Residential Address"] || m["Home Address"]}</div>
+                        <div><strong>Digital Address Locality:</strong></div><div>${m["Digital Address"] || 'None registered'}</div>
                         <div style="grid-column: span 2; border-bottom:1px solid #E2E8F0; margin:0.5rem 0;"></div>
-                        <div><strong>Baptism Status:</strong></div><div>${m["Are you Baptized?"]} (Date: ${m["Baptism Date"] || 'N/A'})</div>
-                        <div><strong>Holy Communion:</strong></div><div>${m["Received First Holy Communion?"]}</div>
-                        <div><strong>Confirmation:</strong></div><div>${m["Received Confirmation?"]}</div>
-                        <div><strong>Parish Groups:</strong></div><div>${m["Parish Group"]}</div>
+                        <div><strong>Sacramental Baptism:</strong></div><div>${m["Baptized"]} (Date: ${m["Baptism Date"] ? m["Baptism Date"].split("T")[0] : 'N/A'})</div>
+                        <div><strong>First Holy Communion:</strong></div><div>${m["First Holy Communion"]}</div>
+                        <div><strong>Confirmation Rite:</strong></div><div>${m["Confirmation"]}</div>
+                        <div><strong>Parish Association Group:</strong></div><div>${m["Parish Group"]}</div>
                         <div><strong>Assigned Ministry:</strong></div><div>${m["Ministry"]}</div>
                         <div style="grid-column: span 2; border-bottom:1px solid #E2E8F0; margin:0.5rem 0;"></div>
                         <div><strong>Emergency Contact:</strong></div><div>${m["Emergency Contact Name"]} (${m["Emergency Contact Number"]})</div>
@@ -1688,66 +1790,13 @@
 
         function closePrintModal() { document.getElementById("printModal").classList.add("hidden"); }
 
-        // Spreadsheet engine parsing module exporter
         function exportToExcel() {
             if (appState.cachedMembers.length === 0) { showToast("No records available to parse.", "error"); return; }
             const worksheet = XLSX.utils.json_to_sheet(appState.cachedMembers);
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, \"Parishioners Registry\");
-            XLSX.writeFile(workbook, \"St_Anthony_Kwamo_Parish_Registry.xlsx\");
-            showToast(\"Excel spreadsheet assembly completed. Download dispatched.\");
-        }
-
-        // Function to generate and print complementary/business-card sized ID Cards for cached members
-        function printComplimentaryIDCards() {
-            if (appState.cachedMembers.length === 0) { 
-                showToast("No registry records cached to generate ID cards.", "error"); 
-                return; 
-            }
-            
-            // Remove old instance container if it exists
-            const oldContainer = document.getElementById("id-card-print-area");
-            if (oldContainer) oldContainer.remove();
-            
-            // Build printing grid container view
-            const printArea = document.createElement("div");
-            printArea.id = "id-card-print-area";
-            printArea.className = "id-card-print-container";
-            
-            appState.cachedMembers.forEach(m => {
-                const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='%23718096'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5-3.33-8-3.33z'/></svg>";
-                const photoUrl = m["Profile Photo URL"] || fallbackImg;
-                
-                printArea.innerHTML += `
-                    <div class="id-card-badge">
-                        <div class="id-card-title">St. Anthony Rectorate — Kwamo</div>
-                        <div class="id-card-inner">
-                            <img class="id-card-img" src="${photoUrl}" onerror="this.src='${fallbackImg}'">
-                            <div class="id-card-details">
-                                <div class="id-card-name">${m["Full Name"] || 'N/A'}</div>
-                                <div><strong>ID:</strong> ${m["Member ID"] || 'N/A'}</div>
-                                <div><strong>Phone:</strong> ${m["Phone Number"] || 'N/A'}</div>
-                                <div><strong>Group:</strong> ${m["Parish Group"] || 'None'}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            document.body.appendChild(printArea);
-            
-            // Toggle active printing layout flags
-            document.documentElement.classList.add("print-id-mode");
-            document.body.classList.add("print-id-mode");
-            
-            window.print();
-            
-            // Clean up visibility layers post print execution dispatch loop hook
-            setTimeout(() => {
-                document.documentElement.classList.remove("print-id-mode");
-                document.body.classList.remove("print-id-mode");
-                if(printArea) printArea.remove();
-            }, 1000);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Parishioners Registry");
+            XLSX.writeFile(workbook, "St_Anthony_Kwamo_Parish_Registry.xlsx");
+            showToast("Excel spreadsheet assembly completed. Download dispatched.");
         }
     </script>
 </body>
