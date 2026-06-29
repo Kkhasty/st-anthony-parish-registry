@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     
     <style>
         /* CSS Palette Settings - Catholic Theme Inspired (Gold, White, Deep Royal Blue) */
@@ -444,6 +445,10 @@
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid var(--accent-gold);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
         /* Profile Card Modal Specific Styles */
@@ -889,7 +894,7 @@
                                 <select id="maritalStatus" required>
                                     <option value="">-- Select --</option>
                                     <option value="Single">Single</option>
-                                    <option value="Married (Catholic Check)">Married (Catholic Church)</option>
+                                    <option value="Married (Catholic Church)">Married (Catholic Church)</option>
                                     <option value="Married (Customary/Civil)">Married (Customary/Civil)</option>
                                     <option value="Widowed">Widowed</option>
                                     <option value="Divorced/Separated">Divorced / Separated</option>
@@ -934,8 +939,8 @@
                                     <option value="No">No</option>
                                 </select>
                             </div>
-                            <div class="form-group" id="baptism-date-group">
-                                <label for="baptismDate">Baptism Date (If known)</label>
+                            <div class="form-group id="baptismDateGroup" class="hidden">
+                                <label for="baptismDate">Baptism Date</label>
                                 <input type="date" id="baptismDate">
                             </div>
                             <div class="form-group">
@@ -954,45 +959,38 @@
                                     <option value="No">No</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="parishGroup">Parish Group / Association</label>
-                                <input type="hidden" id="parishGroup" value="None">
+                            <div class="form-group span-2">
+                                <label>Parish Associations / Groups (Select all applicable)</label>
                                 <div class="tag-select-container" id="tagSelectContainer" onclick="toggleTagDropdown(event)">
-                                    <span class="text-light" id="tagPlaceholderText">Choose Associations...</span>
+                                    <span class="input-tip" id="tagPlaceholderText">Click to select groups...</span>
+                                    <div class="tag-dropdown-choices hidden" id="tagDropdownChoices">
+                                        <div class="tag-choice-item" data-value="None">None / No Group</div>
+                                        <div class="tag-choice-item" data-value="Catholic Men Association">Catholic Men Association</div>
+                                        <div class="tag-choice-item" data-value="Christian Mothers Association">Christian Mothers Association</div>
+                                        <div class="tag-choice-item" data-value="Catholic Youth Organization (CYO)">Catholic Youth Organization (CYO)</div>
+                                        <div class="tag-choice-item" data-value="Knights & Ladies of Marshall">Knights & Ladies of Marshall</div>
+                                        <div class="tag-choice-item" data-value="Knights & Ladies of St. John">Knights & Ladies of St. John</div>
+                                        <div class="tag-choice-item" data-value="Charismatic Renewal">Charismatic Renewal</div>
+                                        <div class="tag-choice-item" data-value="Legion of Mary">Legion of Mary</div>
+                                        <div class="tag-choice-item" data-value="Sacred Heart Confraternity">Sacred Heart Confraternity</div>
+                                        <div class="tag-choice-item" data-value="St. Anthony Guild">St. Anthony Guild</div>
+                                        <div class="tag-choice-item" data-value="Senior Choir">Senior Choir</div>
+                                        <div class="tag-choice-item" data-value="Youth Choir">Youth Choir</div>
+                                        <div class="tag-choice-item" data-value="Altar Servers (Mass Servers)">Altar Servers (Mass Servers)</div>
+                                        <div class="tag-choice-item" data-value="Lectors Guild">Lectors Guild</div>
+                                        <div class="tag-choice-item" data-value="Ushers / Protocol">Ushers / Protocol</div>
+                                    </div>
                                 </div>
-                                <div class="tag-dropdown-choices hidden" id="tagDropdownChoices">
-                                    <div class="tag-choice-item" data-val="None">None / No Group</div>
-                                    <div class="tag-choice-item" data-val="Catholic Men Association">Catholic Men Association</div>
-                                    <div class="tag-choice-item" data-val="Catholic Women Association">Catholic Women Association</div>
-                                    <div class="tag-choice-item" data-val="Christian Mothers Association">Christian Mothers Association</div>
-                                    <div class="tag-choice-item" data-val="Knights & Ladies of Marshall">Knights & Ladies of Blessed Sacrament</div>
-                                    <div class="tag-choice-item" data-val="Knights of St. John International">Knights of St. John International</div>
-                                    <div class="tag-choice-item" data-val="CYO">Catholic Youth Organization (CYO)</div>
-                                    <div class="tag-choice-item" data-val="Mary Mother of Mothers">Mary Mother of Mothers</div>
-                                    <div class="tag-choice-item" data-val="Charismatic Renewal">Catholic Charismatic Renewal</div>
-                                    <div class="tag-choice-item" data-val="St. Theresa">St. Theresa</div>
-                                    <div class="tag-choice-item" data-val="St. Anthony Guild">St. Anthony Guild</div>
-                                    <div class="tag-choice-item" data-val="Legion of Mary">Legion of Mary</div>
-                                    <div class="tag-choice-item" data-val="Sacred Heart Confraternity">Sacred Heart Confraternity</div>
-                                    <div class="tag-choice-item" data-val="Choir">Church Choir</div>
-                                    <div class="tag-choice-item" data-val="Heralds of Praise">Heralds of Praise</div>
-                                    <div class="tag-choice-item" data-val="Good Samaritan">Good Samaritan</div>
-                                    <div class="tag-choice-item" data-val="Altar Servers">Altar Servers Guild</div>
-                                    <div class="tag-choice-item" data-val="Lectors Guild">Lectors Guild</div>
-                                    <div class="tag-choice-item" data-val="Ushers Guild">Ushers Guild</div>
-                                </div>
+                                <input type="hidden" id="parishGroup" value="None">
                             </div>
                             <div class="form-group">
-                                <label for="ministry">Assigned Ministry / Office</label>
+                                <label for="ministry">Assigned Ministry Workspace</label>
                                 <select id="ministry">
-                                    <option value="None">None / Regular Parishioner</option>
-                                    <option value="Parish Pastoral Council">Parish Pastoral Council (PPC)</option>
-                                    <option value="Catechist">Catechist / Instructor</option>
-                                    <option value="Extraordinary Minister of Holy Communion">Extraordinary Minister of Holy Communion</option>
-                                    <option value="Finance Committee">Finance Committee Member</option>
-                                    <option value="Welfare Committee">Welfare Committee Member</option>
-                                    <option value="Media/Tech Team">Media / Tech Team</option>
-                                    <option value="Church Executive">Church Executive</option>
+                                    <option value="None">None / Ordinary Parishioner</option>
+                                    <option value="Parish Council Executive">Parish Council Executive</option>
+                                    <option value="Catechist">Catechist</option>
+                                    <option value="Sacristan">Sacristan</option>
+                                    <option value="Committee Leader">Committee Leader</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -1011,21 +1009,21 @@
                     <fieldset>
                         <legend><i class="fa-solid fa-people-roof"></i> Family & Emergency Logistics</legend>
                         <div class="form-grid">
-                            <div class="form-group">
+                            <div class="form-group span-2">
                                 <label for="fatherName">Father's Full Name</label>
-                                <input type="text" id="fatherName" placeholder="Father's name">
+                                <input type="text" id="fatherName" placeholder="Surname First, e.g., Mensah, Joseph">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group span-2">
                                 <label for="motherName">Mother's Full Name</label>
-                                <input type="text" id="motherName" placeholder="Mother's name">
+                                <input type="text" id="motherName" placeholder="Surname First, e.g., Antwi, Mary">
                             </div>
-                            <div class="form-group">
-                                <label for="emergencyName">Emergency Contact Person <span class="required">*</span></label>
-                                <input type="text" id="emergencyName" required placeholder="Full name of contact">
+                            <div class="form-group span-2">
+                                <label for="emergencyName">Emergency Contact Person Name <span class="required">*</span></label>
+                                <input type="text" id="emergencyName" required placeholder="e.g., Mensah, Francisca (Spouse)">
                             </div>
                             <div class="form-group">
                                 <label for="emergencyPhone">Emergency Contact Number <span class="required">*</span></label>
-                                <input type="tel" id="emergencyPhone" required placeholder="Phone number">
+                                <input type="tel" id="emergencyPhone" required placeholder="e.g., 0551234567">
                             </div>
                         </div>
                     </fieldset>
@@ -1037,147 +1035,140 @@
 
                 <div class="wizard-step-panel hidden" id="stepPanel-4">
                     <fieldset>
-                        <legend><i class="fa-solid fa-paperclip"></i> Media & Additional Records</legend>
+                        <legend><i class="fa-solid fa-photo-film"></i> Media Attachments & Administrative Notes</legend>
                         <div class="form-grid">
                             <div class="form-group span-2">
-                                <label for="profilePhotoFile">Profile Photo (Passport layout formatting)</label>
-                                <input type="file" id="profilePhotoFile" accept="image/*" onchange="openCropperModal(this)">
+                                <label for="photoUpload">Upload Passport Picture</label>
+                                <input type="file" id="photoUpload" accept="image/*" onchange="processProfilePhotoCropLaunch(event)">
+                                <span class="input-tip">Maximum recommended size: 4MB. Square aspect-ratio optimized cropping window will open automatically.</span>
                                 <input type="hidden" id="profilePhotoUrl" value="">
-                                <p class="input-tip">Upload standard passport photo sizing format (Auto-cropped to uniform square layout).</p>
                                 <div id="photoPreviewContainer" class="hidden">
-                                    <img id="photoPreview" src="" alt="Preview Profile Image">
+                                    <p style="font-size:0.8rem; font-weight:bold; margin-top:0.5rem; color:var(--success-green);"><i class="fa-solid fa-square-check"></i> Image Render Attached</p>
+                                    <img id="finalPhotoPreview" src="" alt="Cropped Preview Image Grid Asset">
                                 </div>
                             </div>
-                            <div class="form-group span-2">
-                                <label for="specialSkills">Special Talents / Skills</label>
-                                <input type="text" id="specialSkills" placeholder="e.g., Musical Instruments, Event Organization, Plumbing">
+                            <div class="form-group span-3">
+                                <label for="specialSkills">Special Talents / Professional Skills</label>
+                                <input type="text" id="specialSkills" placeholder="e.g., Musician, Electrician, Graphic Designer, Accountant">
                             </div>
-                            <div class="form-group span-2">
-                                <label for="prayerRequests">Prayer Intentions / Requests</label>
-                                <textarea id="prayerRequests" rows="3" placeholder="Optional private items shared with Pastoral Office..."></textarea>
+                            <div class="form-group span-3">
+                                <label for="prayerRequests">Intentions / Specific Prayer Requests</label>
+                                <textarea id="prayerRequests" rows="2" placeholder="Provide any special intentions or prayer request lines..."></textarea>
                             </div>
-                            <div class="form-group span-2">
-                                <label for="notes">General Administrative Notes</label>
-                                <textarea id="notes" rows="2" placeholder="Any extra items to report..."></textarea>
+                            <div class="form-group span-3">
+                                <label for="notes">General Pastoral Notes</label>
+                                <textarea id="notes" rows="2" placeholder="Add any special historical remarks, family linkages, or validation anomalies..."></textarea>
                             </div>
                         </div>
                     </fieldset>
                     <div class="form-actions">
                         <button type="button" class="btn-secondary" onclick="navigateWizard(3)"><i class="fa-solid fa-arrow-left"></i> Previous</button>
-                        <button type="button" class="btn-secondary" onclick="resetForm()">Clear Form</button>
-                        <button type="submit" id="submitBtn" class="btn-success">Save Information <i class="fa-solid fa-floppy-disk"></i></button>
+                        <button type="button" id="submitFormBtn" class="btn-success" onclick="commitFormSubmissionPayload(event)"><i class="fa-solid fa-cloud-arrow-up"></i> Save Registration Record</button>
                     </div>
                 </div>
             </form>
         </section>
 
         <section id="admin-tab" class="tab-content hidden">
-            <div class="section-title">
-                <h2><i class="fa-solid fa-lock"></i> Administration Terminal Gate</h2>
-                <p>Authorized access validation layers required to parse background files metadata entries.</p>
-            </div>
-
             <div id="admin-auth-block" class="auth-card">
-                <h3>System Password Required</h3>
+                <div style="text-align:center;">
+                    <i class="fa-solid fa-shield-halved" style="font-size:3rem; color:var(--primary-blue); margin-bottom:1rem;"></i>
+                    <h2>Administrative Verification</h2>
+                    <p style="font-size:0.85rem; color:var(--text-light); margin-top:0.25rem;">Enter authorization token password to synchronize records.</p>
+                </div>
                 <div class="form-group">
-                    <label for="adminPass">Credential Authorization Key</label>
+                    <label for="adminPass">Security Access Code</label>
                     <input type="password" id="adminPass" placeholder="••••••••">
                 </div>
-                <button class="btn-primary btn-full" onclick="authenticateAdminGateway()"><i class="fa-solid fa-shield-halved"></i> Unlock Node Terminal</button>
+                <button class="btn-primary btn-full" onclick="authenticateAdminCredentials()"><i class="fa-solid fa-unlock-keyhole"></i> Grant Access</button>
             </div>
 
-            <div id="admin-workspace" class="hidden">
-                <!-- 1. Simple Data Analytics Grid Summary Section -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                    <div style="background:#fff; padding:1.2rem; border-radius:8px; border:1px solid var(--border-gray); box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-                        <h4 style="color:var(--primary-blue); margin-bottom:1rem; font-size:0.95rem; text-transform:uppercase;"><i class="fa-solid fa-cross"></i> Sacraments Breakdown</h4>
-                        <div style="position:relative; height:180px;"><canvas id="chartSacraments"></canvas></div>
-                    </div>
-                    <div style="background:#fff; padding:1.2rem; border-radius:8px; border:1px solid var(--border-gray); box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-                        <h4 style="color:var(--primary-blue); margin-bottom:1rem; font-size:0.95rem; text-transform:uppercase;"><i class="fa-solid fa-cake-candles"></i> Demographics Bracket</h4>
-                        <div style="position:relative; height:180px;"><canvas id="chartAgeBrackets"></canvas></div>
-                    </div>
-                    <div style="background:#fff; padding:1.2rem; border-radius:8px; border:1px solid var(--border-gray); box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-                        <h4 style="color:var(--primary-blue); margin-bottom:1rem; font-size:0.95rem; text-transform:uppercase;"><i class="fa-solid fa-users-rectangle"></i> Top Associations</h4>
-                        <div style="position:relative; height:180px;"><canvas id="chartAssociations"></canvas></div>
-                    </div>
+            <div id="admin-dashboard-view" class="hidden">
+                <div class="section-title">
+                    <h2><i class="fa-solid fa-folder-tree"></i> Central Records Ledger Administration</h2>
+                    <p>Search, update, inspect data sheets, print card templates, and evaluate parish demographics metrics instantly.</p>
                 </div>
 
                 <div class="action-bar">
+                    <button class="btn-primary" onclick="fetchAdminData()"><i class="fa-solid fa-rotate"></i> Synchronize Cloud Data</button>
                     <button class="btn-success" onclick="exportToExcel()"><i class="fa-solid fa-file-excel"></i> Export Matrix to Excel</button>
-                    <button class="btn-primary" onclick="fetchAdminData()"><i class="fa-solid fa-rotate"></i> Reload Dataset</button>
-                    <button class="btn-danger" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> Lock Terminal</button>
-                    <button class="btn-primary" style="background-color: var(--accent-gold); color: var(--primary-blue);" onclick="printComplimentaryIDCards()"><i class="fa-solid fa-id-badge"></i> Print ID Cards</button>
+                    <button class="btn-secondary" onclick="printBulkIdCards()"><i class="fa-solid fa-id-badge"></i> Print Filtered ID Badges</button>
                     
                     <div class="admin-controls-filter-box">
-                        <i class="fa-solid fa-filter"></i>
-                        <input type="text" id="adminSearchInput" placeholder="Filter admin results by name, group..." onkeyup="filterAdminTable()">
-                        <select id="adminGenderFilter" onchange="filterAdminTable()">
-                            <option value="">All Genders</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                        <i class="fa-solid fa-filter" style="color:var(--text-light);"></i>
+                        <input type="text" id="filterSearch" placeholder="Filter by Name, ID, or Phone..." oninput="triggerLiveAdminDataFilters()">
+                        <select id="filterGroup" onchange="triggerLiveAdminDataFilters()">
+                            <option value="">-- Filter Association Group --</option>
+                            <option value="Catholic Men Association">Catholic Men Association</option>
+                            <option value="Christian Mothers Association">Christian Mothers Association</option>
+                            <option value="Catholic Youth Organization (CYO)">Catholic Youth Organization (CYO)</option>
+                            <option value="Altar Servers (Mass Servers)">Altar Servers (Mass Servers)</option>
+                            <option value="Choir">Choir / Musicians</option>
+                            <option value="None">No Registered Group</option>
                         </select>
-                        <!-- 3. Bulk Messaging Group Action Trigger Link Launcher Button -->
-                        <button class="btn-success" onclick="launchGroupBroadcast()" style="white-space: nowrap;"><i class="fa-solid fa-bullhorn"></i> Broadcast to List</button>
+                        <select id="filterSacrament" onchange="triggerLiveAdminDataFilters()">
+                            <option value="">-- Filter Sacrament Status --</option>
+                            <option value="unbaptized">Unbaptized Parishioners</option>
+                            <option value="noCommunion">No Holy Communion Entry</option>
+                            <option value="noConfirmation">No Confirmation Entry</option>
+                        </select>
                     </div>
                 </div>
-                
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:1.5rem;">
+                    <div style="background:#FFF; padding:1rem; border-radius:8px; border:1px solid var(--border-gray);">
+                        <p style="font-weight:bold; color:var(--primary-blue); margin-bottom:0.5rem; text-align:center;"><i class="fa-solid fa-chart-pie"></i> Generational Demographics Profile</p>
+                        <canvas id="chartAgeGroup" height="110"></canvas>
+                    </div>
+                    <div style="background:#FFF; padding:1rem; border-radius:8px; border:1px solid var(--border-gray);">
+                        <p style="font-weight:bold; color:var(--primary-blue); margin-bottom:0.5rem; text-align:center;"><i class="fa-solid fa-chart-bar"></i> Primary Associations Distribution Matrix</p>
+                        <canvas id="chartAssociations" height="110"></canvas>
+                    </div>
+                </div>
+
                 <div class="responsive-table-container">
-                    <table class="data-table" id="adminTable">
+                    <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Photo</th>
+                                <th>Avatar</th>
                                 <th>Member ID</th>
                                 <th>Full Name</th>
-                                <th>Phone</th>
-                                <th>Group</th>
+                                <th>Phone Number</th>
+                                <th>Parish Group</th>
                                 <th>Ministry</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="adminTableBody"></tbody>
+                        <tbody id="adminTableBody">
+                            <tr><td colspan="7" class="center-text" style="text-align:center; padding:2rem; color:var(--text-light);">No data synced yet. Use the synchronization engine controller loop.</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
         </section>
     </main>
 
-    <div id="cropperModal" class="modal-overlay hidden">
-        <div class="modal-card" style="max-width: 500px;">
+    <div id="cropperModal" class="modal-overlay hidden no-print">
+        <div class="modal-card" style="max-width:500px;">
             <div class="modal-header">
-                <h3>Crop Passport Photo</h3>
+                <h3><i class="fa-solid fa-crop"></i> Adjust Profile Picture Boundaries</h3>
                 <button class="close-modal-btn" onclick="closeCropperModal()">&times;</button>
             </div>
             <div class="crop-area-wrapper">
-                <img id="cropperImageSource" src="" alt="Source Photo">
+                <img id="cropperTargetImage" src="" alt="Target Image Grid Workspace Rendering">
             </div>
             <div class="form-actions">
                 <button class="btn-secondary" onclick="closeCropperModal()">Cancel</button>
-                <button class="btn-success" onclick="executeImageCrop()"><i class="fa-solid fa-crop"></i> Crop Photo</button>
+                <button class="btn-primary" onclick="executeCropperEngineCalculation()">Apply Crop Transformation</button>
             </div>
         </div>
     </div>
 
-    <div id="printModal" class="modal-overlay hidden">
+    <div id="profileModal" class="modal-overlay hidden no-print">
         <div class="modal-card">
-            <div class="modal-header no-print">
-                <h3>Parishioner Certificate Summary Dossier</h3>
-                <button class="close-modal-btn" onclick="closePrintModal()">&times;</button>
-            </div>
-            <div id="print-dossier-body" class="print-content"></div>
-            <div class="modal-footer no-print">
-                <button class="btn-secondary" onclick="closePrintModal()">Cancel</button>
-                <button class="btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Execute Document Print</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. Interactive Profile Card Window Component Structure Layout Markup -->
-    <div id="profileCardModal" class="modal-overlay hidden">
-        <div class="modal-card" style="max-width: 620px;">
             <div class="modal-header">
-                <h3>Digital Profile Card View</h3>
-                <button class="close-modal-btn" onclick="closeProfileCardModal()">&times;</button>
+                <h3><i class="fa-solid fa-address-card"></i> Electronic Parishioner Profile Card</h3>
+                <button class="close-modal-btn" onclick="closeProfileModal()">&times;</button>
             </div>
             <div class="profile-card-layout">
                 <div class="profile-card-left">
@@ -1210,161 +1201,118 @@
                     
                     <div id="pTabContent-emergency" class="p-tab-panel hidden">
                         <div class="profile-data-row"><strong>Emergency Contact:</strong> <span id="pc-emerName"></span></div>
-                        <div class="profile-data-row"><strong>Contact Phone:</strong> <span id="pc-emerPhone"></span></div>
-                        <div class="profile-data-row"><strong>Talents/Skills:</strong> <span id="pc-skills"></span></div>
-                        <div class="profile-data-row"><strong>Pastoral Notes:</strong> <span id="pc-notes"></span></div>
+                        <div class="profile-data-row"><strong>Emergency Phone:</strong> <span id="pc-emerPhone"></span></div>
+                        <div class="profile-data-row"><strong>Father's Name:</strong> <span id="pc-father"></span></div>
+                        <div class="profile-data-row"><strong>Mother's Name:</strong> <span id="pc-mother"></span></div>
                     </div>
                 </div>
             </div>
             <div class="form-actions" style="margin-top:1.5rem; border-top:1px solid var(--border-gray); padding-top:1rem;">
-                <button class="btn-secondary" onclick="closeProfileCardModal()">Close Preview</button>
+                <button class="btn-secondary" onclick="closeProfileModal()">Close</button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbwlRF3t0MDXk-Xks0r-5f3udr9zN8RgKj3OJy2AYuOOBZ7XGjpUNOztTHKQNyYuFKKa0g/exec";
+    <div id="printModal" class="modal-overlay hidden">
+        <div class="modal-card" style="max-width:800px; box-shadow:none;">
+            <div class="modal-header no-print">
+                <h3>Document Assembly System Engine View</h3>
+                <div>
+                    <button class="btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Execute Print Matrix</button>
+                    <button class="close-modal-btn" onclick="closePrintModal()">&times;</button>
+                </div>
+            </div>
+            <div id="printModalBody"></div>
+        </div>
+    </div>
 
+    <div class="id-card-print-container" id="bulkIdPrintContainer"></div>
+
+    <script>
+        // Central Cloud Gateway Core Integration Endpoint Link Matrix
+        const API_URL = "https://script.google.com/macros/s/AKfycbz_9IPhR7oGv98O6X-eN3i4S_NfV_B0fB3GZasVpD3A1p6D7Y0C8sY0M9N1b4X7E6_V/exec";
+
+        // Local Application Memory State Buffer Engine
         const appState = {
             currentStep: 1,
-            selectedGroups: ["None"],
-            imageCropperInstance: null,
-            adminAuthenticated: false,
-            adminTokenPassword: "",
             cachedMembers: [],
-            activeProfileCardMember: null,
-            chartInstances: {}
+            selectedGroups: ["None"],
+            cropperInstance: null,
+            adminTokenPassword: "",
+            chartInstances: { age: null, associations: null },
+            activeProfileCardMember: null
         };
+
+        // Tab Switching Engine Router
+        function switchTab(tabName) {
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+            document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
+            
+            document.getElementById(`${tabName}-tab`).classList.remove("hidden");
+            const navBtn = document.getElementById(`nav-${tabName}`);
+            if (navBtn) navBtn.classList.add("active");
+
+            if (tabName === 'dashboard') fetchGlobalStats();
+        }
+
+        // Global Statistics Tracker Counter Routine
+        async function fetchGlobalStats() {
+            try {
+                const res = await fetch(`${API_URL}?action=getStats`, { method: "GET", mode: "cors" });
+                const json = await res.json();
+                if(json.success) {
+                    document.getElementById("stat-count").innerText = json.count || 0;
+                }
+            } catch(e) {
+                console.log("Stats fetch interface skipped: Offline mode execution fallback.", e);
+            }
+        }
 
         window.addEventListener("DOMContentLoaded", () => {
             fetchGlobalStats();
             initTagSelectEngine();
-
-            document.addEventListener("click", () => {
-                document.getElementById("tagDropdownChoices").classList.add("hidden");
-            });
         });
 
-        function printComplimentaryIDCards() {
-            if(appState.cachedMembers.length === 0) {
-                showToast("No active data array found to construct print execution layouts.", "error");
-                return;
+        // Day of Week Parsing Utility from Birthdate Variables Matrix
+        function handleDobChange(dateString) {
+            if (!dateString) return;
+            const birthDate = new Date(dateString);
+            const today = new Date();
+            
+            let calcAge = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                calcAge--;
             }
-            
-            const existingPrintArea = document.getElementById("id-card-print-area");
-            if(existingPrintArea) existingPrintArea.remove();
+            document.getElementById("age").value = calcAge >= 0 ? calcAge : 0;
 
-            const printArea = document.createElement("div");
-            printArea.id = "id-card-print-area";
-            printArea.className = "id-card-print-container";
-
-            const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%230a2540' d='M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C36.1 288 0 324.1 0 368.1V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-95.9c0-44-36.1-80.1-80.4-80.1z'/></svg>";
-
-            appState.cachedMembers.forEach(m => {
-                const photoUrl = m["Profile Photo URL"] || '';
-                printArea.innerHTML += `
-                    <div class="id-card-badge">
-                        <div class="id-card-title">St. Anthony Rectorate — Kwamo</div>
-                        <div class="id-card-inner">
-                            <img class="id-card-img" src="${photoUrl}" onerror="this.src='${fallbackImg}'">
-                            <div class="id-card-details">
-                                <div class="id-card-name">${m["Full Name"] || 'N/A'}</div>
-                                <div><strong>ID:</strong> ${m["Member ID"] || 'N/A'}</div>
-                                <div><strong>Phone:</strong> ${m["Phone Number"] || 'N/A'}</div>
-                                <div><strong>Group:</strong> ${m["Parish Group"] || 'None'}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            document.body.appendChild(printArea);
-            document.documentElement.classList.add("print-id-mode");
-            document.body.classList.add("print-id-mode");
-            window.print();
-
-            setTimeout(() => {
-                document.documentElement.classList.remove("print-id-mode");
-                document.body.classList.remove("print-id-mode");
-                if(printArea) printArea.remove();
-            }, 1000);
+            const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            document.getElementById("dayBorn").value = weekDays[birthDate.getDay()] || "";
         }
 
-        function switchTab(tabName) {
-            document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
-            document.querySelectorAll(".nav-menu .nav-btn").forEach(btn => btn.classList.remove("active"));
-            
-            const activeTabElement = document.getElementById(`${tabName}-tab`);
-            if (activeTabElement) { activeTabElement.classList.remove("hidden"); }
-            
-            const activeNavBtn = document.getElementById(`nav-${tabName}`);
-            if (activeNavBtn) { activeNavBtn.classList.add("active"); }
+        function updateIdPlaceholder(val) {
+            const input = document.getElementById("idCardNumber");
+            if (val === "Ghana Card") input.placeholder = "e.g., GHA-123456789-0";
+            else if (val === "Voter ID") input.placeholder = "e.g., 1023456789";
+            else input.placeholder = "Enter identifier number sequence...";
         }
 
-        function navigateWizard(stepNum) {
-            if (stepNum > appState.currentStep) {
-                if (appState.currentStep === 1) {
-                    const name = document.getElementById("fullName");
-                    const gender = document.getElementById("gender");
-                    const dob = document.getElementById("dob");
-                    const nat = document.getElementById("nationality");
-                    const idNum = document.getElementById("idCardNumber");
-                    const eth = document.getElementById("ethnicity");
-                    const edu = document.getElementById("educationLevel");
-                    const status = document.getElementById("maritalStatus");
-                    const addr = document.getElementById("homeAddress");
-                    const phone = document.getElementById("phoneNumber");
-
-                    if (!name.reportValidity() || !gender.reportValidity() || !dob.reportValidity() || !nat.reportValidity() || !idNum.reportValidity() || !eth.reportValidity() || !edu.reportValidity() || !status.reportValidity() || !addr.reportValidity() || !phone.reportValidity()) {
-                        return;
-                    }
-                }
-                if (appState.currentStep === 2) {
-                    const bpt = document.getElementById("baptized");
-                    const fhc = document.getElementById("firstHolyCommunion");
-                    const conf = document.getElementById("confirmation");
-                    if(!bpt.reportValidity() || !fhc.reportValidity() || !conf.reportValidity()) return;
-                }
-                if (appState.currentStep === 3) {
-                    const eName = document.getElementById("emergencyName");
-                    const ePhone = document.getElementById("emergencyPhone");
-                    if(!eName.reportValidity() || !ePhone.reportValidity()) return;
-                }
-            }
-
-            document.querySelectorAll(".wizard-step-panel").forEach(p => p.classList.add("hidden"));
-            document.getElementById(`stepPanel-${stepNum}`).classList.remove("hidden");
-
-            document.querySelectorAll(".wizard-step-node").forEach((node, idx) => {
-                const nodeIdx = idx + 1;
-                node.className = "wizard-step-node";
-                if(nodeIdx === stepNum) node.classList.add("active");
-                else if(nodeIdx < stepNum) node.classList.add("completed");
-            });
-
-            const percentWidth = ((stepNum - 1) / 3) * 80;
-            document.getElementById("wizardProgressLine").style.width = `${percentWidth}%`;
-            appState.currentStep = stepNum;
-            window.scrollTo({top: 0, behavior: 'smooth'});
+        function toggleBaptismDate(val) {
+            const grp = document.getElementById("baptismDateGroup");
+            if (val === "Yes") grp.classList.remove("hidden");
+            else { grp.classList.add("hidden"); document.getElementById("baptismDate").value = ""; }
         }
 
-        function handleDobChange(val) {
-            calculateAge(val);
-            calculateDayBorn(val);
-        }
-
-        function updateIdPlaceholder(type) {
-            const field = document.getElementById("idCardNumber");
-            if (type === "Ghana Card") field.placeholder = "e.g., GHA-123456789-0";
-            else if (type === "Voter ID") field.placeholder = "e.g., 1234567890";
-            else field.placeholder = "Enter card security digit string value";
-        }
-
+        // Tag Select Dropdown UI Engine Component Setup
         function initTagSelectEngine() {
+            const container = document.getElementById("tagSelectContainer");
+            const choices = document.getElementById("tagDropdownChoices");
+
             document.querySelectorAll(".tag-choice-item").forEach(item => {
-                item.addEventListener("click", () => {
-                    const val = item.getAttribute("data-val");
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const val = item.getAttribute("data-value");
+                    
                     if (val === "None") {
                         appState.selectedGroups = ["None"];
                     } else {
@@ -1376,9 +1324,12 @@
                         }
                     }
                     if (appState.selectedGroups.length === 0) appState.selectedGroups = ["None"];
+                    
                     syncSelectedGroupsToInputAndDOM();
                 });
             });
+
+            window.addEventListener("click", () => choices.classList.add("hidden"));
         }
 
         function toggleTagDropdown(e) {
@@ -1388,151 +1339,141 @@
 
         function syncSelectedGroupsToInputAndDOM() {
             const container = document.getElementById("tagSelectContainer");
-            const input = document.getElementById("parishGroup");
-            container.innerHTML = "";
+            const hiddenInput = document.getElementById("parishGroup");
+            const placeholder = document.getElementById("tagPlaceholderText");
 
+            container.querySelectorAll(".tag-pill").forEach(el => el.remove());
             document.querySelectorAll(".tag-choice-item").forEach(item => {
-                const itemVal = item.getAttribute("data-val");
-                if (appState.selectedGroups.includes(itemVal)) {
-                    item.classList.add("selected");
-                    const pill = document.createElement("div");
-                    pill.className = "tag-pill";
-                    pill.innerHTML = `${itemVal} <i class="fa-solid fa-circle-xmark" onclick="removeGroupTag(event, '${itemVal}')"></i>`;
-                    container.appendChild(pill);
-                } else {
-                    item.classList.remove("selected");
-                }
+                const val = item.getAttribute("data-value");
+                if (appState.selectedGroups.includes(val)) item.classList.add("selected");
+                else item.classList.remove("selected");
             });
 
-            if (appState.selectedGroups.length === 0 || (appState.selectedGroups.length === 1 && appState.selectedGroups[0] === "")) {
-                container.innerHTML = `<span class="text-light" id="tagPlaceholderText">Choose Associations...</span>`;
-                input.value = "None";
+            if (appState.selectedGroups.length === 1 && appState.selectedGroups[0] === "None") {
+                placeholder.classList.remove("hidden");
+                hiddenInput.value = "None";
             } else {
-                input.value = appState.selectedGroups.join(", ");
+                placeholder.classList.add("hidden");
+                hiddenInput.value = appState.selectedGroups.join(", ");
+                
+                appState.selectedGroups.forEach(g => {
+                    const pill = document.createElement("span");
+                    pill.className = "tag-pill";
+                    pill.innerHTML = `${g} <i class="fa-solid fa-circle-xmark"></i>`;
+                    pill.querySelector("i").addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        appState.selectedGroups = appState.selectedGroups.filter(x => x !== g);
+                        if (appState.selectedGroups.length === 0) appState.selectedGroups = ["None"];
+                        syncSelectedGroupsToInputAndDOM();
+                    });
+                    container.insertBefore(pill, document.getElementById("tagDropdownChoices"));
+                });
             }
         }
 
-        function removeGroupTag(e, value) {
-            e.stopPropagation();
-            appState.selectedGroups = appState.selectedGroups.filter(g => g !== value);
-            if (appState.selectedGroups.length === 0) appState.selectedGroups = ["None"];
-            syncSelectedGroupsToInputAndDOM();
+        // Sequential multi-step wizard programmatic form logic validator
+        function navigateWizard(stepNum) {
+            if (stepNum > appState.currentStep) {
+                if (appState.currentStep === 1) {
+                    const fieldsToValidate = [
+                        "fullName", "gender", "dob", "nationality", 
+                        "idCardNumber", "ethnicity", "educationLevel", 
+                        "maritalStatus", "homeAddress", "phoneNumber"
+                    ];
+                    
+                    let isStepValid = true;
+                    for (const id of fieldsToValidate) {
+                        const element = document.getElementById(id);
+                        if (element && !element.checkValidity()) {
+                            element.reportValidity();
+                            isStepValid = false;
+                            break; 
+                        }
+                    }
+                    if (!isStepValid) return;
+                }
+                
+                if (appState.currentStep === 2) {
+                    const bpt = document.getElementById("baptized");
+                    const fhc = document.getElementById("firstHolyCommunion");
+                    const conf = document.getElementById("confirmation");
+                    if (!bpt.reportValidity() || !fhc.reportValidity() || !conf.reportValidity()) return;
+                }
+                
+                if (appState.currentStep === 3) {
+                    const emN = document.getElementById("emergencyName");
+                    const emP = document.getElementById("emergencyPhone");
+                    if (!emN.reportValidity() || !emP.reportValidity()) return;
+                }
+            }
+
+            document.getElementById(`stepPanel-${appState.currentStep}`).classList.add("hidden");
+            document.getElementById(`stepNode-${appState.currentStep}`).classList.remove("active");
+            if (stepNum < appState.currentStep) {
+                document.getElementById(`stepNode-${appState.currentStep}`).classList.remove("completed");
+            } else {
+                document.getElementById(`stepNode-${appState.currentStep}`).classList.add("completed");
+            }
+
+            appState.currentStep = stepNum;
+            document.getElementById(`stepPanel-${appState.currentStep}`).classList.remove("hidden");
+            document.getElementById(`stepNode-${appState.currentStep}`).classList.add("active");
+            
+            const progressPercent = ((stepNum - 1) / 3) * 80;
+            document.getElementById("wizardProgressLine").style.width = `${progressPercent}%`;
         }
 
-        function openCropperModal(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById("cropperImageSource").src = e.target.result;
-                    document.getElementById("cropperModal").classList.remove("hidden");
-                    if (appState.imageCropperInstance) appState.imageCropperInstance.destroy();
-                    
-                    const imgNode = document.getElementById("cropperImageSource");
-                    appState.imageCropperInstance = new Cropper(imgNode, {
+        // Cropper Attachment Integration Layer Logic Elements
+        function processProfilePhotoCropLaunch(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById("cropperTargetImage").src = event.target.result;
+                document.getElementById("cropperModal").classList.remove("hidden");
+                
+                if(appState.cropperInstance) appState.cropperInstance.destroy();
+                
+                setTimeout(() => {
+                    const image = document.getElementById("cropperTargetImage");
+                    appState.cropperInstance = new Cropper(image, {
                         aspectRatio: 1,
                         viewMode: 1,
                         background: false
                     });
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+                }, 150);
+            };
+            reader.readAsDataURL(file);
         }
 
         function closeCropperModal() {
             document.getElementById("cropperModal").classList.add("hidden");
-            if(appState.imageCropperInstance) appState.imageCropperInstance.destroy();
-            document.getElementById("profilePhotoFile").value = "";
+            if(appState.cropperInstance) appState.cropperInstance.destroy();
+            document.getElementById("photoUpload").value = "";
         }
 
-        function executeImageCrop() {
-            if(!appState.imageCropperInstance) return;
-            const canvas = appState.imageCropperInstance.getCroppedCanvas({ width: 300, height: 300 });
-            const dataUrl = canvas.toDataURL("image/jpeg");
+        function executeCropperEngineCalculation() {
+            if(!appState.cropperInstance) return;
+            const canvas = appState.cropperInstance.getCroppedCanvas({ width: 300, height: 300 });
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
             
             document.getElementById("profilePhotoUrl").value = dataUrl;
-            document.getElementById("photoPreview").src = dataUrl;
+            document.getElementById("finalPhotoPreview").src = dataUrl;
             document.getElementById("photoPreviewContainer").classList.remove("hidden");
-            closeCropperModal();
+            
+            document.getElementById("cropperModal").classList.add("hidden");
+            appState.cropperInstance.destroy();
         }
 
-        function calculateAge(dobString) {
-            if (!dobString) return;
-            const birthDate = new Date(dobString);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            document.getElementById("age").value = age >= 0 ? age : 0;
-        }
-
-        function calculateDayBorn(dobString) {
-            if (!dobString) {
-                document.getElementById("dayBorn").value = "";
-                return;
-            }
-            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            const birthDate = new Date(dobString);
-            const dayIndex = birthDate.getDay();
-            document.getElementById("dayBorn").value = !isNaN(dayIndex) ? days[dayIndex] : "";
-        }
-
-        function toggleBaptismDate(value) {
-            const group = document.getElementById("baptism-date-group");
-            if (value === "Yes") {
-                group.style.display = "flex";
-            } else {
-                group.style.display = "none";
-                document.getElementById("baptismDate").value = "";
-            }
-        }
-
-        function showToast(message, type = "success") {
-            const container = document.getElementById("toast-container");
-            container.innerText = message;
-            container.className = `toast-${type}`;
-            container.classList.remove("hidden");
-            setTimeout(() => {
-                container.classList.add("hidden");
-            }, 4500);
-        }
-
-        function resetForm() {
-            document.getElementById("memberForm").reset();
-            document.getElementById("edit-member-id").value = "";
-            document.getElementById("profilePhotoUrl").value = "";
-            document.getElementById("photoPreviewContainer").classList.add("hidden");
-            document.getElementById("photoPreview").src = "";
-            document.getElementById("submitBtn").innerText = "Save Information";
-            appState.selectedGroups = ["None"];
-            syncSelectedGroupsToInputAndDOM();
-            updateIdPlaceholder("Ghana Card");
-            navigateWizard(1);
-        }
-
-        async function fetchGlobalStats() {
-            try {
-                const response = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getStats" }) });
-                const res = await response.json();
-                if (res.success) {
-                    document.getElementById("stat-count").innerText = res.data.totalRegistrations;
-                }
-            } catch (err) {
-                console.error("Error updating dashboard status counters: ", err);
-            }
-        }
-
-        document.getElementById("memberForm").addEventListener("submit", async (e) => {
+        // Form Submit Payload Builder Engine Routine Function
+        async function commitFormSubmissionPayload(e) {
             e.preventDefault();
-            const submitBtn = document.getElementById("submitBtn");
-            submitBtn.disabled = true;
-            submitBtn.innerText = "Processing, please wait...";
-
+            const btn = document.getElementById("submitFormBtn");
             const editId = document.getElementById("edit-member-id").value;
-            const idTypeSelected = document.getElementById("idCardType").value;
-            const idNumInput = document.getElementById("idCardNumber").value;
-            const constructedIdentityCardField = `${idTypeSelected} (${idNumInput})`;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing Ledger Stream...`;
 
             const formData = {
                 fullName: document.getElementById("fullName").value,
@@ -1541,7 +1482,8 @@
                 age: document.getElementById("age").value,
                 dayBorn: document.getElementById("dayBorn").value,
                 nationality: document.getElementById("nationality").value,
-                identityCard: constructedIdentityCardField,
+                idCardType: document.getElementById("idCardType").value,
+                idCardNumber: document.getElementById("idCardNumber").value,
                 ethnicity: document.getElementById("ethnicity").value,
                 educationLevel: document.getElementById("educationLevel").value,
                 occupation: document.getElementById("occupation").value,
@@ -1569,12 +1511,9 @@
                 notes: document.getElementById("notes").value
             };
 
-            const requestPayload = editId ? {
-                action: "update",
-                memberId: editId,
-                password: appState.adminTokenPassword,
-                data: formData
-            } : { action: "register", data: formData };
+            const requestPayload = editId ? 
+                { action: "update", memberId: editId, password: appState.adminTokenPassword, data: formData } : 
+                { action: "register", data: formData };
 
             try {
                 const response = await fetch(API_URL, {
@@ -1604,80 +1543,61 @@
                 fetchGlobalStats();
                 switchTab('dashboard');
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Save Information";
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Save Registration Record`;
             }
-        });
-
-        function filterAdminTable() {
-            const searchVal = document.getElementById("adminSearchInput").value.toLowerCase();
-            const genderVal = document.getElementById("adminGenderFilter").value;
-
-            const filtered = appState.cachedMembers.filter(m => {
-                const matchesSearch = (m["Full Name"] || "").toLowerCase().includes(searchVal) ||
-                                      (m["Member ID"] || "").toLowerCase().includes(searchVal) ||
-                                      (m["Parish Group"] || "").toLowerCase().includes(searchVal) ||
-                                      (m["Ministry"] || "").toLowerCase().includes(searchVal);
-                
-                const matchesGender = !genderVal || (m["Gender"] || "").toLowerCase() === genderVal.toLowerCase();
-
-                return matchesSearch && matchesGender;
-            });
-
-            renderAdminTable(filtered);
         }
 
-        function authenticateAdminGateway() {
-            const pass = document.getElementById("adminPass").value;
-            if(!pass) { showToast("Security string signature cannot be left blank.", "error"); return; }
-            
-            const authBlock = document.getElementById("admin-auth-block");
-            const baselineHtml = authBlock.innerHTML;
-            authBlock.innerHTML = `<h3><i class="fa-solid fa-spinner fa-spin"></i> Validating credentials security tokens...</h3>`;
-
-            fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "readAll", password: pass })
-            })
-            .then(res => res.json())
-            .then(res => {
-                if (res.success) {
-                    appState.adminAuthenticated = true;
-                    appState.adminTokenPassword = pass;
-                    appState.cachedMembers = res.data;
-                    showToast("System token verified. Access granted.", "success");
-                    authBlock.classList.add("hidden");
-                    document.getElementById("admin-workspace").classList.remove("hidden");
-                    renderAdminTable(res.data);
-                } else {
-                    showToast("Invalid credentials signature security validation check.", "error");
-                    authBlock.innerHTML = baselineHtml;
-                }
-            })
-            .catch(() => {
-                showToast("Connection handshake error.", "error");
-                authBlock.innerHTML = baselineHtml;
-            });
+        function resetForm() {
+            document.getElementById("memberForm").reset();
+            document.getElementById("edit-member-id").value = "";
+            document.getElementById("profilePhotoUrl").value = "";
+            document.getElementById("photoPreviewContainer").classList.add("hidden");
+            document.getElementById("finalPhotoPreview").src = "";
+            document.getElementById("baptismDateGroup").classList.add("hidden");
+            appState.selectedGroups = ["None"];
+            syncSelectedGroupsToInputAndDOM();
+            navigateWizard(1);
         }
 
-        function logoutAdmin() {
-            appState.adminAuthenticated = false;
-            appState.adminTokenPassword = "";
-            location.reload();
+        // Toast Notification System Engine Utility
+        function showToast(msg, type="success") {
+            const container = document.getElementById("toast-container");
+            container.className = `toast-${type}`;
+            container.innerHTML = `<i class="fa-solid ${type==='success'?'fa-circle-check':'fa-triangle-exclamation'}"></i> ${msg}`;
+            container.classList.remove("hidden");
+            setTimeout(() => container.classList.add("hidden"), 4500);
         }
 
+        // Verification Access Routine Security Mapping Controller
+        function authenticateAdminCredentials() {
+            const code = document.getElementById("adminPass").value;
+            if (code.trim().length >= 4) {
+                appState.adminTokenPassword = code;
+                document.getElementById("admin-auth-block").classList.add("hidden");
+                document.getElementById("admin-dashboard-view").classList.remove("hidden");
+                fetchAdminData();
+            } else {
+                showToast("Invalid administrative token context dimension value length.", "error");
+            }
+        }
+
+        // Sync and Fetch Central Records Framework Data Engine Interface
         async function fetchAdminData() {
-            if (!appState.adminAuthenticated) return;
+            if(!appState.adminTokenPassword) return;
+            showToast("Querying transactional dataset indexes...");
             try {
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    body: JSON.stringify({ action: "readAll", password: appState.adminTokenPassword })
+                const response = await fetch(`${API_URL}?action=fetchRecords&password=${encodeURIComponent(appState.adminTokenPassword)}`, {
+                    method: "GET",
+                    mode: "cors"
                 });
                 const res = await response.json();
                 if (res.success) {
                     appState.cachedMembers = res.data;
                     renderAdminTable(res.data);
                     showToast("Local data mirrors completely updated.");
+                } else {
+                    showToast(`Sync authentication mismatch: ${res.error}`, "error");
                 }
             } catch (e) {
                 showToast("Sync routine fault error.", "error");
@@ -1686,242 +1606,324 @@
 
         function renderAdminTable(records) {
             const body = document.getElementById("adminTableBody");
-            
-            // 1. Refresh visual dashboard charts
             renderAnalyticsCharts(records);
-
+            
             if (records.length === 0) {
-                body.innerHTML = `<tr><td colspan="7" class="center-text">No registered row datasets found inside ledger file.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="7" class="center-text" style="text-align:center;">No registered row datasets found inside ledger file.</td></tr>`;
                 return;
             }
+
             body.innerHTML = records.map(m => {
                 const fallbackAvatar = `<div class="table-avatar" style="background:#0a2540;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;"><i class="fa-solid fa-user"></i></div>`;
                 const avatarImg = m["Profile Photo URL"] ? `<img src="${m["Profile Photo URL"]}" class="table-avatar" alt="Avatar">` : fallbackAvatar;
+                
                 return `
-                    <tr>
-                        <td>${avatarImg}</td>
-                        <td><strong>${m["Member ID"]}</strong></td>
-                        <td>${m["Full Name"]}</td>
-                        <td>${m["Phone Number"]}</td>
-                        <td>${m["Parish Group"]}</td>
-                        <td>${m["Ministry"]}</td>
-                        <td>
-                            <div style="display:flex; gap:0.25rem;">
-                                <button class="btn-primary" style="padding:4px 8px; font-size:11px;" onclick="viewDigitalProfileCard('${m["Member ID"]}')" title="Profile Card"><i class="fa-solid fa-id-card"></i></button>
-                                <button class="btn-primary" style="padding:4px 8px; font-size:11px; background-color:var(--accent-gold);" onclick="printDossier('${m["Member ID"]}')" title="Print Dossier"><i class="fa-solid fa-print"></i></button>
-                                <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="loadMemberToEdit('${m["Member ID"]}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn-danger" style="padding:4px 8px; font-size:11px;" onclick="executeQuickDelete('${m["Member ID"]}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+                <tr>
+                    <td>${avatarImg}</td>
+                    <td><strong>${m["Member ID"]}</strong></td>
+                    <td>${m["Full Name"]}</td>
+                    <td>${m["Phone Number"]}</td>
+                    <td>${m["Parish Group"]}</td>
+                    <td>${m["Ministry"]}</td>
+                    <td>
+                        <div style="display:flex; gap:0.25rem;">
+                            <button class="btn-primary" style="padding:4px 8px; font-size:11px;" onclick="viewDigitalProfileCard('${m["Member ID"]}')" title="Profile Card"><i class="fa-solid fa-id-card"></i></button>
+                            <button class="btn-primary" style="padding:4px 8px; font-size:11px; background-color:var(--accent-gold);" onclick="printDossier('${m["Member ID"]}')" title="Print Dossier"><i class="fa-solid fa-print"></i></button>
+                            <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="loadMemberToEdit('${m["Member ID"]}')" title="Edit Member"><i class="fa-solid fa-user-gear"></i></button>
+                            <button class="btn-danger" style="padding:4px 8px; font-size:11px;" onclick="executeQuickDelete('${m["Member ID"]}')" title="Purge Record"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join("");
         }
 
-        // 1. Simple Data Analytics Graph Compilation logic
+        // Filter and Search Evaluation Routine Engine Mapping Algorithms
+        function triggerLiveAdminDataFilters() {
+            const query = document.getElementById("filterSearch").value.toLowerCase();
+            const groupFilter = document.getElementById("filterGroup").value;
+            const sacramentFilter = document.getElementById("filterSacrament").value;
+
+            const filteredList = appState.cachedMembers.filter(m => {
+                const searchStr = `${m["Member ID"]} ${m["Full Name"]} ${m["Phone Number"]}`.toLowerCase();
+                const matchesSearch = searchStr.includes(query);
+
+                let matchesGroup = true;
+                if (groupFilter) {
+                    if (groupFilter === "None") matchesGroup = (m["Parish Group"] === "None" || !m["Parish Group"]);
+                    else if (groupFilter === "Choir") matchesGroup = (m["Parish Group"] || "").includes("Choir");
+                    else matchesGroup = (m["Parish Group"] || "").includes(groupFilter);
+                }
+
+                let matchesSacrament = true;
+                if (sacramentFilter) {
+                    if (sacramentFilter === "unbaptized") matchesSacrament = (m["Baptized"] === "No");
+                    if (sacramentFilter === "noCommunion") matchesSacrament = (m["First Holy Communion"] === "No");
+                    if (sacramentFilter === "noConfirmation") matchesSacrament = (m["Confirmation"] === "No");
+                }
+
+                return matchesSearch && matchesGroup && matchesSacrament;
+            });
+
+            renderAdminTable(filteredList);
+        }
+
+        // Charts Analytics Visualization Render Engines Configurations
         function renderAnalyticsCharts(records) {
-            // Data aggregators
-            let baptizedCount = 0, unbaptizedCount = 0;
+            if (appState.chartInstances.age) appState.chartInstances.age.destroy();
+            if (appState.chartInstances.associations) appState.chartInstances.associations.destroy();
+
             let youthCount = 0, adultCount = 0, elderCount = 0;
             let associationMap = {};
 
             records.forEach(m => {
-                // Sacrament Parse
-                if((m["Baptized"] || "").toLowerCase() === "yes") baptizedCount++;
-                else unbaptizedCount++;
+                const calcAge = parseInt(m["Age"]) || 0;
+                if (calcAge < 18) youthCount++;
+                else if (calcAge < 60) adultCount++;
+                else elderCount++;
 
-                // Age Brackets Parse
-                let age = parseInt(m["Age"] || 0);
-                if(age > 0 && age <= 24) youthCount++;
-                else if(age >= 25 && age <= 59) adultCount++;
-                else if(age >= 60) elderCount++;
-
-                // Associations Map Parse
-                let groups = (m["Parish Group"] || "None").split(",");
-                groups.forEach(g => {
-                    let cleaned = g.trim();
-                    if(cleaned && cleaned !== "None") {
-                        associationMap[cleaned] = (associationMap[cleaned] || 0) + 1;
-                    }
+                const grpStr = m["Parish Group"] || "None";
+                grpStr.split(",").forEach(g => {
+                    const cleanG = g.trim();
+                    if(cleanG && cleanG !== "None") associationMap[cleanG] = (associationMap[cleanG] || 0) + 1;
                 });
             });
 
-            // Destroy historical instances safely
-            if(appState.chartInstances.sacraments) appState.chartInstances.sacraments.destroy();
-            if(appState.chartInstances.age) appState.chartInstances.age.destroy();
-            if(appState.chartInstances.associations) appState.chartInstances.associations.destroy();
+            const chartConfig = {
+                responsive: true,
+                plugins: { legend: { display: true, position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+            };
 
-            const chartConfig = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } };
-
-            // Render Sacraments
-            appState.chartInstances.sacraments = new Chart(document.getElementById('chartSacraments'), {
+            appState.chartInstances.age = new Chart(document.getElementById('chartAgeGroup'), {
                 type: 'doughnut',
-                data: { labels: ['Baptized', 'Unbaptized'], datasets: [{ data: [baptizedCount, unbaptizedCount], backgroundColor: ['#2F855A', '#C53030'] }] },
+                data: {
+                    labels: ['Youth (<18)', 'Adult (18-59)', 'Elder (60+)'],
+                    datasets: [{
+                        data: [youthCount, adultCount, elderCount],
+                        backgroundColor: ['#0A2540', '#D4AF37', '#718096']
+                    }]
+                },
                 options: chartConfig
             });
 
-            // Render Age Brackets
-            appState.chartInstances.age = new Chart(document.getElementById('chartAgeBrackets'), {
-                type: 'pie',
-                data: { labels: ['Youth (0-24)', 'Adults (25-59)', 'Elders (60+)'], datasets: [{ data: [youthCount, adultCount, elderCount], backgroundColor: ['#0A2540', '#D4AF37', '#718096'] }] },
-                options: chartConfig
-            });
-
-            // Render Top Associations 
             let topAssocLabels = Object.keys(associationMap);
             let topAssocData = Object.values(associationMap);
+            
             appState.chartInstances.associations = new Chart(document.getElementById('chartAssociations'), {
                 type: 'bar',
-                data: { labels: topAssocLabels.slice(0, 4), datasets: [{ label: 'Members', data: topAssocData.slice(0, 4), backgroundColor: '#0A2540' }] },
-                options: { ...chartConfig, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                data: {
+                    labels: topAssocLabels.slice(0, 4),
+                    datasets: [{
+                        label: 'Members',
+                        data: topAssocData.slice(0, 4),
+                        backgroundColor: '#0A2540'
+                    }]
+                },
+                options: {
+                    ...chartConfig,
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
             });
         }
 
-        // 2. Individual Profile View (Card Mode Tab Configuration Actions)
+        // Individual Profile View Card Configuration Actions
         function viewDigitalProfileCard(memberId) {
             const m = appState.cachedMembers.find(item => item["Member ID"] === memberId);
             if(!m) return;
-            
             appState.activeProfileCardMember = m;
-            const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%230a2540' d='M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C36.1 288 0 324.1 0 368.1V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-95.9c0-44-36.1-80.1-80.4-80.1z'/></svg>";
             
+            const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%230a2540' d='M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C36.1 288 0 324.1 0 368.1V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-95.9c0-44-36.1-80.1-89.6-80.1z'/></svg>";
             document.getElementById("pCardPhoto").src = m["Profile Photo URL"] || fallbackImg;
-            document.getElementById("pCardName").innerText = m["Full Name"] || "N/A";
-            document.getElementById("pCardId").innerText = `ID Reference: ${m["Member ID"]}`;
+            document.getElementById("pCardName").innerText = m["Full Name"];
+            document.getElementById("pCardId").innerText = `ID: ${m["Member ID"]}`;
             
-            // Map Profile Data Blocks
-            document.getElementById("pc-gender").innerText = m["Gender"] || "N/A";
-            document.getElementById("pc-age").innerText = m["Age"] || "0";
+            document.getElementById("pc-gender").innerText = m["Gender"];
+            document.getElementById("pc-age").innerText = m["Age"];
             document.getElementById("pc-dayborn").innerText = m["Day Born"] || "N/A";
-            document.getElementById("pc-phone").innerText = m["Phone Number"] || "N/A";
+            document.getElementById("pc-phone").innerText = m["Phone Number"];
             document.getElementById("pc-address").innerText = m["Residential Address"] || m["Home Address"] || "N/A";
-            document.getElementById("pc-job").innerText = m["Occupation"] || "N/A";
+            document.getElementById("pc-job").innerText = m["Occupation"] || "None Listed";
             
-            document.getElementById("pc-baptized").innerText = m["Baptized"] || "No";
-            document.getElementById("pc-communion").innerText = m["First Holy Communion"] || "No";
-            document.getElementById("pc-confirmed").innerText = m["Confirmation"] || "No";
+            document.getElementById("pc-baptized").innerText = m["Baptized"];
+            document.getElementById("pc-communion").innerText = m["First Holy Communion"];
+            document.getElementById("pc-confirmed").innerText = m["Confirmation"];
             document.getElementById("pc-group").innerText = m["Parish Group"] || "None";
             document.getElementById("pc-ministry").innerText = m["Ministry"] || "None";
             
             document.getElementById("pc-emerName").innerText = m["Emergency Contact Name"] || m["Emergency Contact Person"] || "N/A";
-            document.getElementById("pc-emerPhone").innerText = m["Emergency Contact Number"] || "N/A";
-            document.getElementById("pc-skills").innerText = m["Special Skills"] || "None";
-            document.getElementById("pc-notes").innerText = m["Notes"] || "No records.";
+            document.getElementById("pc-emerPhone").innerText = m["Emergency Contact Number"] || m["Emergency Contact Phone"] || "N/A";
+            document.getElementById("pc-father").innerText = m["Father's Full Name"] || m["Father Name"] || "N/A";
+            document.getElementById("pc-mother").innerText = m["Mother's Full Name"] || m["Mother Name"] || "N/A";
 
             switchProfileCardTab('personal');
-            document.getElementById("profileCardModal").classList.remove("hidden");
+            document.getElementById("profileModal").classList.remove("hidden");
         }
 
-        function switchProfileCardTab(tabId) {
+        function switchProfileCardTab(tabKey) {
             document.querySelectorAll(".p-tab-panel").forEach(p => p.classList.add("hidden"));
             document.querySelectorAll(".profile-tab-btn").forEach(b => b.classList.remove("active"));
+            document.getElementById(`pTabContent-${tabKey}`).classList.remove("hidden");
+            document.getElementById(`pTabBtn-${tabKey}`).classList.add("active");
+        }
+
+        function closeProfileModal() { document.getElementById("profileModal").classList.add("hidden"); }
+
+        // Print Dossier System Component Pipeline
+        function printDossier(memberId) {
+            const m = appState.cachedMembers.find(item => item["Member ID"] === memberId);
+            if(!m) return;
             
-            document.getElementById(`pTabContent-${tabId}`).classList.remove("hidden");
-            document.getElementById(`pTabBtn-${tabId}`).classList.add("active");
+            document.body.classList.remove("print-id-mode");
+            const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%230a2540' d='M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C36.1 288 0 324.1 0 368.1V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-95.9c0-44-36.1-80.1-89.6-80.1z'/></svg>";
+            const avatar = m["Profile Photo URL"] ? `<img src="${m["Profile Photo URL"]}" class="dossier-avatar" alt="Profile">` : `<div class="dossier-avatar" style="background:#F3E5AB; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-church" style="font-size:3rem; color:#0A2540;"></i></div>`;
+            
+            document.getElementById("printModalBody").innerHTML = `
+                <div class="print-dossier-layout">
+                    <div class="dossier-header">
+                        <h2>ST. ANTHONY CATHOLIC RECTORATE - KWAMO</h2>
+                        <p style="text-transform:uppercase; font-weight:bold; color:var(--text-light); font-size:12px; letter-spacing:1px; margin-top:2px;">Official Parishioner Record Dossier Archive Sheet</p>
+                    </div>
+                    ${avatar}
+                    <h3 style="text-align:center; margin-top:0.5rem; color:#0A2540;">${m["Full Name"]}</h3>
+                    <p style="text-align:center; font-weight:bold; color:#D4AF37; font-size:13px; margin-bottom:1.5rem;">REGISTRATION MASTER ID: ${m["Member ID"]}</p>
+                    
+                    <div class="dossier-grid">
+                        <div><strong>Gender Profile:</strong></div><div>${m["Gender"]}</div>
+                        <div><strong>Date of Birth / Day:</strong></div><div>${m["Date of Birth"]} (${m["Day Born"] || 'Uncalculated'})</div>
+                        <div><strong>Calculated Age Value:</strong></div><div>${m["Age"]} years old</div>
+                        <div><strong>Nationality Framework:</strong></div><div>${m["Nationality"]}</div>
+                        <div><strong>Identity Card Verified:</strong></div><div>${m["Identity Card"] || m["Identity Document Type"] || 'N/A'}</div>
+                        <div><strong>Ethnicity Lineage:</strong></div><div>${m["Ethnicity"]}</div>
+                        <div><strong>Academic Education:</strong></div><div>${m["Level of Education"]}</div>
+                        <div><strong>Occupation / Work:</strong></div><div>${m["Occupation"]} @ ${m["Place of Work"] || 'Not Stated'}</div>
+                        <div><strong>Marital Status Layout:</strong></div><div>${m["Marital Status"]}</div>
+                        <div style="grid-column: span 2; border-bottom:1px solid #E2E8F0; margin:0.5rem 0;"></div>
+                        <div><strong>Phone Number:</strong></div><div>${m["Phone Number"]}</div>
+                        <div><strong>WhatsApp Endpoint:</strong></div><div>${m["WhatsApp Number"] || 'None listed'}</div>
+                        <div><strong>Email Address Node:</strong></div><div>${m["Email Address"] || 'None listed'}</div>
+                        <div><strong>Home Residence:</strong></div><div>${m["Residential Address"] || m["Home Address"] || 'N/A'}</div>
+                        <div><strong>Digital Address Locality:</strong></div><div>${m["Digital Address"] || 'None registered'}</div>
+                        <div style="grid-column: span 2; border-bottom:1px solid #E2E8F0; margin:0.5rem 0;"></div>
+                        <div><strong>Sacrament Baptism:</strong></div><div>${m["Baptized"]} ${m["Baptism Date"] ? `(Dated: ${m["Baptism Date"].split("T")[0]})` : ''}</div>
+                        <div><strong>First Holy Communion:</strong></div><div>${m["First Holy Communion"]}</div>
+                        <div><strong>Confirmation Holy Spirit:</strong></div><div>${m["Confirmation"]}</div>
+                        <div><strong>Parish Group Membership:</strong></div><div>${m["Parish Group"]}</div>
+                        <div><strong>Assigned Ministry:</strong></div><div>${m["Ministry"]}</div>
+                        <div style="grid-column: span 2; border-bottom:1px solid #E2E8F0; margin:0.5rem 0;"></div>
+                        <div><strong>Emergency Contact:</strong></div><div>${m["Emergency Contact Name"] || m["Emergency Contact Person"] || 'N/A'} (${m["Emergency Contact Number"] || m["Emergency Contact Phone"] || 'N/A'})</div>
+                        <div><strong>Special Skills:</strong></div><div>${m["Special Skills"] || 'None Declared'}</div>
+                        <div><strong>Pastoral Notes:</strong></div><div>${m["Notes"] || 'No additional file entries logged.'}</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById("printModal").classList.remove("hidden");
         }
 
-        function closeProfileCardModal() {
-            document.getElementById("profileCardModal").classList.add("hidden");
-        }
+        function closePrintModal() { document.getElementById("printModal").classList.add("hidden"); }
 
-        // 3. Bulk SMS & WhatsApp Multi-Broadcast Launcher Link Matrix Build Engine
-        function launchGroupBroadcast() {
-            const searchVal = document.getElementById("adminSearchInput").value.toLowerCase();
-            const genderVal = document.getElementById("adminGenderFilter").value;
+        function printBulkIdCards() {
+            const body = document.getElementById("adminTableBody");
+            const visibleRows = body.querySelectorAll("tr");
+            const container = document.getElementById("bulkIdPrintContainer");
+            container.innerHTML = "";
 
-            // Generate subset from exactly what the admin sees
-            const filteredList = appState.cachedMembers.filter(m => {
-                const matchesSearch = (m["Full Name"] || "").toLowerCase().includes(searchVal) ||
-                                      (m["Member ID"] || "").toLowerCase().includes(searchVal) ||
-                                      (m["Parish Group"] || "").toLowerCase().includes(searchVal) ||
-                                      (m["Ministry"] || "").toLowerCase().includes(searchVal);
-                const matchesGender = !genderVal || (m["Gender"] || "").toLowerCase() === genderVal.toLowerCase();
-                return matchesSearch && matchesGender;
+            let processedCount = 0;
+            visibleRows.forEach(row => {
+                const idCell = row.cells[1];
+                if(!idCell) return;
+                const mId = idCell.innerText.trim();
+                const m = appState.cachedMembers.find(item => item["Member ID"] === mId);
+                if(!m) return;
+
+                processedCount++;
+                const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%230a2540' d='M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C36.1 288 0 324.1 0 368.1V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-95.9c0-44-36.1-80.1-89.6-80.1z'/></svg>";
+                const photoSrc = m["Profile Photo URL"] || fallbackImg;
+
+                const badge = document.createElement("div");
+                badge.className = "id-card-badge";
+                badge.innerHTML = `
+                    <div class="id-card-inner">
+                        <img src="${photoSrc}" class="id-card-img" alt="Photo">
+                        <div class="id-card-details">
+                            <div class="id-card-title">St. Anthony Rectorate - Kwamo</div>
+                            <div class="id-card-name">${m["Full Name"]}</div>
+                            <div><strong>ID:</strong> ${m["Member ID"]}</div>
+                            <div><strong>Phone:</strong> ${m["Phone Number"]}</div>
+                            <div style="font-size:7pt; color:var(--text-light); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><strong>Group:</strong> ${m["Parish Group"]}</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(badge);
             });
 
-            if(filteredList.length === 0) {
-                showToast("No active contact entries found inside current filtered workspace context.", "error");
+            if(processedCount === 0) {
+                showToast("No records available to export for visible filters.", "error");
                 return;
             }
 
-            // Clean number configurations
-            const phoneNumbers = filteredList.map(m => {
-                let num = (m["WhatsApp Number"] || m["Phone Number"] || "").trim().replace(/\s+/g, '');
-                if(num.startsWith("0")) num = "233" + num.substring(1);
-                return num;
-            }).filter(num => num.length >= 9);
-
-            if(phoneNumbers.length === 0) {
-                showToast("No valid phone structures resolved from standard parsing variables.", "error");
-                return;
-            }
-
-            const commaSeparatedString = phoneNumbers.join(",");
-            const textMessageBody = encodeURIComponent("St. Anthony Rectorate Admin Notice: ");
-            
-            // Generate customized confirmation trigger overlay choice 
-            const opt = confirm(`Launch system communication node broadcast for ${phoneNumbers.length} parishioners?\n\nPress OK to open via WhatsApp Multi-Web Endpoint, Cancel to copy clean values to clipboard.`);
-            if(opt) {
-                window.open(`https://wa.me/?phone=${phoneNumbers[0]}&text=${textMessageBody}`, '_blank');
-            } else {
-                navigator.clipboard.writeText(commaSeparatedString);
-                showToast("Phone list copied to administrative clipboard array string!", "success");
-            }
+            document.body.className = "print-id-mode";
+            window.print();
         }
 
-        // 4. Quick-Delete Database Action API Transaction Layer Controller Engine
-        async function executeQuickDelete(memberId) {
-            if(!confirm(`WARNING: Are you sure you want to completely erase member record ID: ${memberId} from the master archive? This change updates the live backend ledger immediately.`)) return;
+        // Excel Export System Component Action
+        function exportToExcel() {
+            if (appState.cachedMembers.length === 0) { showToast("No records available to parse.", "error"); return; }
+            const worksheet = XLSX.utils.json_to_sheet(appState.cachedMembers);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Parishioners Registry");
+            XLSX.writeFile(workbook, "St_Anthony_Kwamo_Parish_Registry.xlsx");
+            showToast("Excel spreadsheet assembly completed. Download dispatched.");
+        }
 
+        // Purge/Delete Confirmation Data Layer Sync
+        async function executeQuickDelete(memberId) {
+            if(!confirm(`WARNING: Are you sure you want to completely erase member record ID: ${memberId}? This cannot be undone.`)) return;
             showToast("Processing row delete instruction...", "success");
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({
-                        action: "delete",
-                        memberId: memberId,
-                        password: appState.adminTokenPassword
-                    })
+                    body: JSON.stringify({ action: "delete", memberId: memberId, password: appState.adminTokenPassword })
                 });
                 const result = await response.json();
                 if(result.success) {
-                    showToast(`Record ${memberId} purged successfully from cloud ledger system variables.`, "success");
-                    fetchAdminData(); // Refresh list dynamically
+                    showToast(`Record ${memberId} purged successfully from cloud ledger.`, "success");
+                    fetchAdminData();
                 } else {
                     showToast(`Rejection notice: ${result.error}`, "error");
                 }
             } catch(e) {
-                showToast("Network fault encountered, check backend Apps Script validation logs.", "error");
+                showToast("Network fault encountered. Check backend logs.", "error");
             }
         }
 
+        // Populating the Main Form for Data Modifications
         function loadMemberToEdit(memberId) {
             const m = appState.cachedMembers.find(item => item["Member ID"] === memberId);
-            if(!m) { showToast("Ledger indexing match row search failed.", "error"); return; }
+            if (!m) return;
 
+            resetForm();
             document.getElementById("edit-member-id").value = m["Member ID"];
+            
             document.getElementById("fullName").value = m["Full Name"] || "";
             document.getElementById("gender").value = m["Gender"] || "";
             if (m["Date of Birth"]) document.getElementById("dob").value = m["Date of Birth"].split("T")[0];
             document.getElementById("age").value = m["Age"] || "";
             document.getElementById("dayBorn").value = m["Day Born"] || "";
             document.getElementById("nationality").value = m["Nationality"] || "Ghanaian";
-
-            const idRaw = m["Identity Card"] || "";
+            
+            // Robust Identity Parser Corrected Fallback
+            const idRaw = m["Identity Card"] || m["Identity Document Type"] || "";
             if (idRaw.includes("(")) {
                 const parts = idRaw.split("(");
-                const type = parts[0].trim();
-                const num = parts[1].replace(")", "").trim();
-                document.getElementById("idCardType").value = type;
-                updateIdPlaceholder(type);
-                document.getElementById("idCardNumber").value = num;
+                document.getElementById("idCardType").value = parts[0].trim();
+                document.getElementById("idCardNumber").value = parts[1].replace(")", "").trim();
             } else {
-                document.getElementById("idCardNumber").value = idRaw;
+                document.getElementById("idCardNumber").value = idRaw.trim();
+                document.getElementById("idCardType").value = idRaw.startsWith("GHA-") ? "Ghana Card" : "Ghana Card";
             }
 
             document.getElementById("ethnicity").value = m["Ethnicity"] || "";
-            document.getElementById("educationLevel").value = m["Level of Education"] || "";
+            document.getElementById("educationLevel").value = m["Level of Education"] || m["Education Level"] || "";
             document.getElementById("occupation").value = m["Occupation"] || "";
             document.getElementById("placeOfWork").value = m["Place of Work"] || "";
             document.getElementById("maritalStatus").value = m["Marital Status"] || "";
@@ -1934,93 +1936,34 @@
             document.getElementById("baptized").value = m["Baptized"] || "";
             toggleBaptismDate(m["Baptized"] || "");
             if (m["Baptism Date"]) document.getElementById("baptismDate").value = m["Baptism Date"].split("T")[0];
-            
             document.getElementById("firstHolyCommunion").value = m["First Holy Communion"] || "";
             document.getElementById("confirmation").value = m["Confirmation"] || "";
-
+            
             const rawGrpString = m["Parish Group"] || "None";
             appState.selectedGroups = rawGrpString.split(",").map(item => item.trim()).filter(item => item !== "");
             if(appState.selectedGroups.length === 0) appState.selectedGroups = ["None"];
             syncSelectedGroupsToInputAndDOM();
-
+            
             document.getElementById("ministry").value = m["Ministry"] || "None";
             if (m["Date Joined Church"]) document.getElementById("dateJoined").value = m["Date Joined Church"].split("T")[0];
             
             document.getElementById("fatherName").value = m["Father Name"] || m["Father's Full Name"] || "";
             document.getElementById("motherName").value = m["Mother Name"] || m["Mother's Full Name"] || "";
             document.getElementById("emergencyName").value = m["Emergency Contact Name"] || m["Emergency Contact Person"] || "";
-            document.getElementById("emergencyPhone").value = m["Emergency Contact Number"] || "";
-
+            document.getElementById("emergencyPhone").value = m["Emergency Contact Number"] || m["Emergency Contact Phone"] || m["Emergency Phone Number"] || "";
+            
             if (m["Profile Photo URL"]) {
                 document.getElementById("profilePhotoUrl").value = m["Profile Photo URL"];
-                document.getElementById("photoPreview").src = m["Profile Photo URL"];
+                document.getElementById("finalPhotoPreview").src = m["Profile Photo URL"];
                 document.getElementById("photoPreviewContainer").classList.remove("hidden");
-            } else {
-                document.getElementById("profilePhotoUrl").value = "";
-                document.getElementById("photoPreviewContainer").classList.add("hidden");
             }
-
+            
             document.getElementById("specialSkills").value = m["Special Skills"] || "";
-            document.getElementById("prayerRequests").value = m["Prayer Requests"] || m["Prayer Intentions / Requests"] || "";
-            document.getElementById("notes").value = m["Notes"] || m["General Administrative Notes"] || "";
+            document.getElementById("prayerRequests").value = m["Intentions / Specific Prayer Requests"] || m["Prayer Requests"] || "";
+            document.getElementById("notes").value = m["Notes"] || m["General Pastoral Notes"] || "";
 
-            document.getElementById("submitBtn").innerText = "Update Member Record";
             switchTab('registration');
-        }
-
-        function printDossier(memberId) {
-            const m = appState.cachedMembers.find(item => item["Member ID"] === memberId);
-            if(!m) { showToast("Could not resolve member index match layout mapping data context.", "error"); return; }
-
-            const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path fill='%230a2540' d='M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C36.1 288 0 324.1 0 368.1V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-95.9c0-44-36.1-80.1-80.4-80.1z'/></svg>";
-            const photoUrl = m["Profile Photo URL"] || fallbackImg;
-            const derivedDay = m["Day Born"] || "Not calculated";
-
-            document.getElementById("print-dossier-body").innerHTML = `
-                <div class="print-dossier-layout">
-                    <div class="dossier-header">
-                        <h2>St. Anthony Catholic Rectorate</h2>
-                        <p style="color:var(--accent-gold); text-transform:uppercase; font-size:12px; font-weight:bold; letter-spacing:1px;">Kwamo, Ghana</p>
-                        <p style="font-size:14px; margin-top:5px; font-style:italic;">Archive Entry Record Copy</p>
-                    </div>
-                    <img src="${photoUrl}" class="dossier-avatar" alt="Parishioner Photo Component">
-                    <h3 style="text-align:center; margin:1rem 0; color:#0a2540;">ID Ref: ${m["Member ID"]}</h3>
-                    <div class="dossier-grid">
-                        <div><strong>Full Legal Name:</strong></div><div>${m["Full Name"]}</div>
-                        <div><strong>Gender / Age:</strong></div><div>${m["Gender"]} (Age: ${m["Age"]})</div>
-                        <div><strong>Date of Birth / Day Born:</strong></div><div>${m["Date of Birth"] ? m["Date of Birth"].split("T")[0] : "N/A"} (${derivedDay})</div>
-                        <div><strong>Identity ID Card:</strong></div><div>${m["Identity Card"] || m["idCard"] || "N/A"}</div>
-                        <div><strong>Ethnicity Context:</strong></div><div>${m["Ethnicity"] || 'N/A'}</div>
-                        <div><strong>Primary Phone Number:</strong></div><div>${m["Phone Number"]}</div>
-                        <div><strong>WhatsApp Endpoint:</strong></div><div>${m["WhatsApp Number"] || 'None listed'}</div>
-                        <div><strong>Email Address Node:</strong></div><div>${m["Email Address"] || 'None listed'}</div>
-                        <div><strong>Home Residence:</strong></div><div>${m["Residential Address"] || m["Home Address"]}</div>
-                        <div><strong>Digital Address Locality:</strong></div><div>${m["Digital Address"] || 'None registered'}</div>
-                        <div style="grid-column: span 2; border-bottom:1px solid #E2E8F0; margin:0.5rem 0;"></div>
-                        <div><strong>Sacramental Baptism:</strong></div><div>${m["Baptized"]} (Date: ${m["Baptism Date"] ? m["Baptism Date"].split("T")[0] : 'N/A'})</div>
-                        <div><strong>First Holy Communion:</strong></div><div>${m["First Holy Communion"]}</div>
-                        <div><strong>Confirmation Rite:</strong></div><div>${m["Confirmation"]}</div>
-                        <div><strong>Parish Association Group:</strong></div><div>${m["Parish Group"]}</div>
-                        <div><strong>Assigned Ministry:</strong></div><div>${m["Ministry"]}</div>
-                        <div style="grid-column: span 2; border-bottom:1px solid #E2E8F0; margin:0.5rem 0;"></div>
-                        <div><strong>Emergency Contact:</strong></div><div>${m["Emergency Contact Name"]} (${m["Emergency Contact Number"]})</div>
-                        <div><strong>Special Skills:</strong></div><div>${m["Special Skills"] || 'None Declared'}</div>
-                        <div><strong>Pastoral Notes:</strong></div><div>${m["Notes"] || 'No additional file entries logged.'}</div>
-                    </div>
-                </div>
-            `;
-            document.getElementById("printModal").classList.remove("hidden");
-        }
-
-        function closePrintModal() { document.getElementById("printModal").classList.add("hidden"); }
-
-        function exportToExcel() {
-            if (appState.cachedMembers.length === 0) { showToast("No records available to parse.", "error"); return; }
-            const worksheet = XLSX.utils.json_to_sheet(appState.cachedMembers);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Parishioners Registry");
-            XLSX.writeFile(workbook, "St_Anthony_Kwamo_Parish_Registry.xlsx");
-            showToast("Excel spreadsheet assembly completed. Download dispatched.");
+            showToast(`Loaded details for member ID: ${memberId}`);
         }
     </script>
 </body>
