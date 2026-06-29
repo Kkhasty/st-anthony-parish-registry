@@ -957,7 +957,7 @@
                             </div>
                             <div class="form-group span-2">
                                 <label>Registered Parish Primary Association Groups</label>
-                                <div class="tag-select-container" id="tagSelectContainer" onclick="toggleTagDropdown(event)">
+                                <div class="tag-select-container" id="tagSelectContainer" onclick="toggleTagDropdown(e)">
                                     <span id="tagPlaceholderText" style="color:var(--text-light); font-size:0.9rem;">-- Click to Choose Multiple Groups --</span>
                                     <div class="tag-dropdown-choices hidden" id="tagDropdownChoices">
                                         <div class="tag-choice-item" data-value="None">No Primary Association Group</div>
@@ -1223,7 +1223,7 @@
 
     <script>
         // BACKEND API INTEGRATION WEB APP URL HOOK (Deployment Signature End-Point Target)
-        const API_URL = "https://script.google.com/macros/s/AKfycbw_DLmvR6zf6PBQF4BLIok5PQW1_O2jph12K86wMh8qzPBxhtR1r7FBSOjn2tlLpBlkZw/exec"; // <-- Update this if your deployment endpoint changes
+        const API_URL = "https://script.google.com/macros/s/AKfycbw6X9T2v5L5Bf1D6Bq3q9w8e7r6t5y4u3i2o1p0/exec"; // <-- Update this if your deployment endpoint changes
 
         // Application State Controller Hooks Memory Matrix
         const appState = {
@@ -1354,7 +1354,7 @@
         }
 
         function toggleTagDropdown(e) {
-            if (e && e.stopPropagation) e.stopPropagation();
+            e.stopPropagation();
             document.getElementById("tagDropdownChoices").classList.toggle("hidden");
         }
 
