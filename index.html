@@ -964,6 +964,24 @@
             .ap-charts-grid { grid-template-columns: 1fr; }
             .ap-charts-grid .ap-card { height: auto; }
         }
+        .ap-sortable { cursor: pointer; user-select: none; transition: background 0.15s ease; }
+        .ap-sortable:hover { background: #16395e; }
+        .ap-sortable i { font-size: 0.7rem; margin-left: 0.3rem; opacity: 0.8; }
+
+        .ap-pagination-bar {
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+            gap: 0.85rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-gray);
+            font-size: 0.82rem; color: var(--text-light);
+        }
+        .ap-page-size { display: flex; align-items: center; gap: 0.5rem; }
+        .ap-page-size select { padding: 0.3rem 0.5rem; font-size: 0.82rem; }
+        .ap-pagination-controls { display: flex; align-items: center; gap: 0.6rem; }
+        .ap-pagination-controls .ap-icon-btn { width: 32px; height: 32px; font-size: 0.8rem; }
+        .ap-pagination-controls .ap-icon-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .ap-data-table tbody tr:nth-child(even) { background: rgba(10,37,64,0.015); }
+
+        /* Export Center wiring tooltip */
+        .ap-export-tile small { color: var(--text-light); font-size: 0.7rem; }
     </style>
 </head>
 <body>
@@ -1448,6 +1466,8 @@
                             <div class="ap-toolbar">
                                 <div class="ap-card-title" style="margin-bottom:0;"><i class="fa-solid fa-table-list"></i> Member Registry</div>
                                 <div style="flex:1;"></div>
+                                <button class="btn-modern btn-modern-ghost" onclick="exportToCSV()"><i class="fa-solid fa-file-csv"></i> CSV</button>
+                                <button class="btn-modern btn-modern-ghost" onclick="exportToExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button>
                                 <button class="btn-modern btn-modern-gold" onclick="printBulkIdCards()"><i class="fa-solid fa-id-badge"></i> Print Filtered ID Badges</button>
                             </div>
                             <div class="ap-table-scroll">
@@ -1455,10 +1475,10 @@
                                     <thead>
                                         <tr>
                                             <th>Photo</th>
-                                            <th>Member ID</th>
-                                            <th>Full Name</th>
-                                            <th>Phone Contact</th>
-                                            <th>Gender</th>
+                                            <th class="ap-sortable" onclick="apSortTable('id')">Member ID <i class="fa-solid fa-sort" id="sortIcon-id"></i></th>
+                                            <th class="ap-sortable" onclick="apSortTable('name')">Full Name <i class="fa-solid fa-sort" id="sortIcon-name"></i></th>
+                                            <th class="ap-sortable" onclick="apSortTable('phone')">Phone Contact <i class="fa-solid fa-sort" id="sortIcon-phone"></i></th>
+                                            <th class="ap-sortable" onclick="apSortTable('gender')">Gender <i class="fa-solid fa-sort" id="sortIcon-gender"></i></th>
                                             <th>Association</th>
                                             <th style="text-align:right;">Actions</th>
                                         </tr>
@@ -1476,6 +1496,23 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="ap-pagination-bar">
+                                <div class="ap-page-size">
+                                    <label for="apPageSizeSelect">Rows per page</label>
+                                    <select id="apPageSizeSelect" onchange="apChangePageSize(this.value)">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
+                                <span id="apTableRangeLabel">Showing 0 of 0</span>
+                                <div class="ap-pagination-controls">
+                                    <button class="ap-icon-btn" id="apPrevPageBtn" onclick="apChangePage(-1)" title="Previous page"><i class="fa-solid fa-chevron-left"></i></button>
+                                    <span id="apTablePageLabel">Page 1 of 1</span>
+                                    <button class="ap-icon-btn" id="apNextPageBtn" onclick="apChangePage(1)" title="Next page"><i class="fa-solid fa-chevron-right"></i></button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1489,7 +1526,7 @@
                                     <h4>Export Excel</h4>
                                     <p>Download the full registry as an .xlsx workbook.</p>
                                 </div>
-                                <div class="ap-export-tile" onclick="exportToExcel()">
+                                <div class="ap-export-tile" onclick="exportToCSV()">
                                     <i class="fa-solid fa-file-csv"></i>
                                     <h4>Export CSV</h4>
                                     <p>Spreadsheet export, compatible with any CSV reader.</p>
@@ -1612,7 +1649,12 @@
             cachedMembers: [],
             selectedGroups: ["None"],
             chartInstances: { age: null, associations: null },
-            activeProfileCardMember: null
+            activeProfileCardMember: null,
+            lastRenderedRecords: [],
+            tableSortKey: null,
+            tableSortDir: 'asc',
+            tablePage: 1,
+            tablePageSize: 10
         };
 
         // Initialize component layers safely down the loading pipeline loop context
@@ -1865,16 +1907,37 @@
             document.getElementById("photoUpload").value = "";
         }
 
+        // Keep the encoded photo well under Google Sheets' ~50,000 char/cell limit so the
+        // submission payload stays small and the sheet write doesn't slow to a crawl.
+        function buildCompressedPhotoDataUrl(cropperInstance) {
+            const MAX_BASE64_CHARS = 28000; // ~20KB binary — safe margin, fast to upload & write
+            const sizeSteps = [220, 180, 140, 110];
+            const qualitySteps = [0.75, 0.6, 0.45, 0.3];
+            let bestDataUrl = "";
+            for (const size of sizeSteps) {
+                const canvas = cropperInstance.getCroppedCanvas({ width: size, height: size });
+                for (const quality of qualitySteps) {
+                    bestDataUrl = canvas.toDataURL("image/jpeg", quality);
+                    if (bestDataUrl.length <= MAX_BASE64_CHARS) return bestDataUrl;
+                }
+            }
+            return bestDataUrl; // smallest we could achieve, even if still above target
+        }
+
         function executeCropperEngineCalculation() {
             if(!appState.cropperInstance) return;
-            const canvas = appState.cropperInstance.getCroppedCanvas({ width: 300, height: 300 });
-            const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
-            
+            const MAX_BASE64_CHARS = 28000;
+            const dataUrl = buildCompressedPhotoDataUrl(appState.cropperInstance);
+
             document.getElementById("profilePhotoUrl").value = dataUrl;
             document.getElementById("finalPhotoPreview").src = dataUrl;
             document.getElementById("photoPreviewContainer").classList.remove("hidden");
             document.getElementById("cropperModal").classList.add("hidden");
             appState.cropperInstance.destroy();
+
+            if (dataUrl.length > MAX_BASE64_CHARS) {
+                showToast(`Photo compressed to ~${Math.round(dataUrl.length/1024)}KB. A simpler/lower-resolution source photo will sync faster.`, "error");
+            }
         }
 
         // Form Submit Payload Builder Engine Routine Function
@@ -1929,12 +1992,30 @@
                 data: formData
             };
 
+            // Reassure the user during slow Apps Script round-trips instead of leaving a static spinner
+            const reassuranceMessages = [
+                `<i class="fa-solid fa-spinner fa-spin"></i> Processing Ledger Stream...`,
+                `<i class="fa-solid fa-spinner fa-spin"></i> Still syncing with Google Sheets...`,
+                `<i class="fa-solid fa-spinner fa-spin"></i> Almost there, hang tight...`,
+                `<i class="fa-solid fa-spinner fa-spin"></i> This is taking longer than usual...`
+            ];
+            let reassuranceIdx = 0;
+            const reassuranceTimer = setInterval(() => {
+                reassuranceIdx = Math.min(reassuranceIdx + 1, reassuranceMessages.length - 1);
+                btn.innerHTML = reassuranceMessages[reassuranceIdx];
+            }, 6000);
+
+            // Abort and surface a clear message if Apps Script hangs, rather than spinning forever
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 45000);
+
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
                     mode: "cors",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
                 });
                 
                 const res = await response.json();
@@ -1953,8 +2034,14 @@
                     showToast(`Error processing database transaction: ${res.error}`, "error");
                 }
             } catch (err) {
-                showToast("System connectivity error down the transaction pipeline.", "error");
+                if (err.name === "AbortError") {
+                    showToast("The request took too long (45s+) and was cancelled. Google Apps Script may be under heavy load — please try again.", "error");
+                } else {
+                    showToast("System connectivity error down the transaction pipeline.", "error");
+                }
             } finally {
+                clearTimeout(timeoutId);
+                clearInterval(reassuranceTimer);
                 btn.disabled = false;
                 btn.innerHTML = editId ? `<i class="fa-solid fa-cloud-arrow-up"></i> Update Ledger Entry` : `<i class="fa-solid fa-cloud-arrow-up"></i> Commit Registration`;
             }
@@ -2005,8 +2092,6 @@
         }
 
         function renderAdminTable(records) {
-            const body = document.getElementById("adminTableBody");
-            
             // Render demographic profiles and association matrix charts instantly
             renderAnalyticsCharts(records);
 
@@ -2031,8 +2116,61 @@
             animateApCounter("stat-youth", youthCountStat);
             animateApCounter("stat-ministries", ministrySet.size);
             animateApCounter("stat-new", newCount);
-            
-            if (records.length === 0) {
+
+            appState.lastRenderedRecords = records;
+            apRenderTableBody();
+        }
+
+        // Column key -> source field mapping for sortable headers
+        const AP_SORT_FIELD_MAP = { id: "Member ID", name: "Full Name", phone: "Phone Number", gender: "Gender" };
+
+        function apSortTable(key) {
+            if (appState.tableSortKey === key) {
+                appState.tableSortDir = appState.tableSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                appState.tableSortKey = key;
+                appState.tableSortDir = 'asc';
+            }
+            appState.tablePage = 1;
+            apRenderTableBody();
+        }
+
+        function apChangePage(delta) {
+            const totalPages = Math.max(1, Math.ceil(appState.lastRenderedRecords.length / appState.tablePageSize));
+            appState.tablePage = Math.min(totalPages, Math.max(1, appState.tablePage + delta));
+            apRenderTableBody();
+        }
+
+        function apChangePageSize(val) {
+            appState.tablePageSize = parseInt(val, 10) || 10;
+            appState.tablePage = 1;
+            apRenderTableBody();
+        }
+
+        // Builds the (sorted + paginated) rows for the Member Registry table from the
+        // currently filtered dataset held in appState.lastRenderedRecords
+        function apRenderTableBody() {
+            const body = document.getElementById("adminTableBody");
+            let records = [...appState.lastRenderedRecords];
+
+            // Sorting
+            document.querySelectorAll(".ap-sortable i").forEach(i => { i.className = "fa-solid fa-sort"; });
+            if (appState.tableSortKey) {
+                const field = AP_SORT_FIELD_MAP[appState.tableSortKey];
+                records.sort((a, b) => {
+                    const va = (a[field] || "").toString().toLowerCase();
+                    const vb = (b[field] || "").toString().toLowerCase();
+                    if (va < vb) return appState.tableSortDir === 'asc' ? -1 : 1;
+                    if (va > vb) return appState.tableSortDir === 'asc' ? 1 : -1;
+                    return 0;
+                });
+                const icon = document.getElementById(`sortIcon-${appState.tableSortKey}`);
+                if (icon) icon.className = appState.tableSortDir === 'asc' ? "fa-solid fa-sort-up" : "fa-solid fa-sort-down";
+            }
+
+            const totalRecords = records.length;
+
+            if (totalRecords === 0) {
                 body.innerHTML = `<tr><td colspan="7">
                     <div class="ap-empty">
                         <i class="fa-solid fa-folder-open"></i>
@@ -2040,14 +2178,21 @@
                         <p>Try syncing again, or adjust your filters.</p>
                     </div>
                 </td></tr>`;
+                apUpdatePaginationBar(0, 0, 1);
                 return;
             }
-            
-            body.innerHTML = records.map(m => {
+
+            // Pagination
+            const totalPages = Math.max(1, Math.ceil(totalRecords / appState.tablePageSize));
+            if (appState.tablePage > totalPages) appState.tablePage = totalPages;
+            const startIdx = (appState.tablePage - 1) * appState.tablePageSize;
+            const pageRecords = records.slice(startIdx, startIdx + appState.tablePageSize);
+
+            body.innerHTML = pageRecords.map(m => {
                 const fallbackAvatar = `<div class="table-avatar" style="background:#0a2540;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;"><i class="fa-solid fa-user"></i></div>`;
                 const avatarImg = m["Profile Photo URL"] ? `<img src="${m["Profile Photo URL"]}" class="table-avatar" alt="Avatar">` : fallbackAvatar;
                 const genderBadgeClass = m["Gender"] === "Female" ? "ap-badge-pink" : "ap-badge-blue";
-                
+
                 return `
                     <tr>
                         <td>${avatarImg}</td>
@@ -2067,6 +2212,26 @@
                     </tr>
                 `;
             }).join("");
+
+            apUpdatePaginationBar(startIdx, totalRecords, totalPages);
+        }
+
+        function apUpdatePaginationBar(startIdx, totalRecords, totalPages) {
+            const rangeLabel = document.getElementById("apTableRangeLabel");
+            const pageLabel = document.getElementById("apTablePageLabel");
+            const prevBtn = document.getElementById("apPrevPageBtn");
+            const nextBtn = document.getElementById("apNextPageBtn");
+            if (!rangeLabel) return;
+
+            if (totalRecords === 0) {
+                rangeLabel.innerText = "Showing 0 of 0";
+            } else {
+                const endIdx = Math.min(startIdx + appState.tablePageSize, totalRecords);
+                rangeLabel.innerText = `Showing ${startIdx + 1}-${endIdx} of ${totalRecords}`;
+            }
+            pageLabel.innerText = `Page ${appState.tablePage} of ${totalPages}`;
+            prevBtn.disabled = appState.tablePage <= 1;
+            nextBtn.disabled = appState.tablePage >= totalPages;
         }
 
         // Search Pipeline Live Content Engine Filters
@@ -2098,6 +2263,7 @@
                 return matchesSearch && matchesGroup && matchesSacrament;
             });
 
+            appState.tablePage = 1;
             renderAdminTable(filteredList);
         }
 
@@ -2414,12 +2580,50 @@
         }
 
         function exportToExcel() {
-            if (appState.cachedMembers.length === 0) { showToast("No records available to parse.", "error"); return; }
-            const worksheet = XLSX.utils.json_to_sheet(appState.cachedMembers);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Parishioners Registry");
-            XLSX.writeFile(workbook, "St_Anthony_Kwamo_Parish_Registry.xlsx");
-            showToast("Excel spreadsheet assembly completed. Download dispatched.");
+            if (appState.cachedMembers.length === 0) { showToast("No records available to parse. Sync data first.", "error"); return; }
+            if (typeof XLSX === "undefined") {
+                showToast("Excel engine failed to load (the xlsx library from cdn.jsdelivr.net may be blocked on this network). Try Export CSV instead.", "error");
+                return;
+            }
+            try {
+                const worksheet = XLSX.utils.json_to_sheet(appState.cachedMembers);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Parishioners Registry");
+                XLSX.writeFile(workbook, "St_Anthony_Kwamo_Parish_Registry.xlsx");
+                showToast("Excel spreadsheet assembly completed. Download dispatched.");
+            } catch (err) {
+                showToast("Excel export failed: " + err.message, "error");
+            }
+        }
+
+        // Dependency-free CSV export — works even if the XLSX CDN script is blocked
+        function exportToCSV() {
+            if (appState.cachedMembers.length === 0) { showToast("No records available to parse. Sync data first.", "error"); return; }
+            try {
+                const records = appState.cachedMembers;
+                const headers = Object.keys(records.reduce((acc, r) => Object.assign(acc, r), {}));
+                const escapeCell = (val) => {
+                    let s = (val === undefined || val === null) ? "" : String(val);
+                    if (/[",\n]/.test(s)) s = `"${s.replace(/"/g, '""')}"`;
+                    return s;
+                };
+                const csvRows = [headers.map(escapeCell).join(",")];
+                records.forEach(r => csvRows.push(headers.map(h => escapeCell(r[h])).join(",")));
+                const csvContent = "\uFEFF" + csvRows.join("\r\n");
+
+                const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "St_Anthony_Kwamo_Parish_Registry.csv";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                showToast("CSV export completed. Download dispatched.");
+            } catch (err) {
+                showToast("CSV export failed: " + err.message, "error");
+            }
         }
     </script>
 </body>
