@@ -1898,6 +1898,9 @@
                 });
             }
         }
+        // Example: If member.Profile_Photo_URL is empty, show a default image
+const imgDisplay = member.Profile_Photo_URL ? member.Profile_Photo_URL : 'default-avatar.png';
+document.getElementById('member-image').src = imgDisplay;
 
         // Cropper Attachment Integration Layer Logic Elements
         function processProfilePhotoCropLaunch(e) {
