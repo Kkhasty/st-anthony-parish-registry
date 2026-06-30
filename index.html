@@ -709,6 +709,261 @@
                 color: #000;
             }
         }
+        /* =========================================================
+           PREMIUM ADMIN PORTAL REDESIGN
+           Everything below is additive/scoped (ap- prefix) so the
+           existing Dashboard/Registration tabs and all JS hooks
+           (ids, onclick handlers, classes) keep working untouched.
+        ========================================================= */
+        :root {
+            --ap-radius-sm: 8px;
+            --ap-radius-md: 12px;
+            --ap-radius-lg: 18px;
+            --ap-shadow-sm: 0 1px 3px rgba(10,37,64,0.08);
+            --ap-shadow-md: 0 8px 24px rgba(10,37,64,0.10);
+            --ap-shadow-lg: 0 16px 40px rgba(10,37,64,0.16);
+            --ap-sidebar-w: 240px;
+        }
+
+        .ap-auth-card {
+            max-width: 420px;
+            margin: 4rem auto;
+            background: linear-gradient(160deg, var(--pure-white), #fbfbfd);
+            padding: 2.5rem 2.25rem;
+            border-radius: var(--ap-radius-lg);
+            box-shadow: var(--ap-shadow-lg);
+            border-top: 5px solid var(--accent-gold);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            animation: fadeIn 0.4s ease;
+        }
+        .ap-auth-icon {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), #1e3d59);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 0.5rem auto; box-shadow: var(--ap-shadow-md);
+        }
+        .ap-auth-icon i { font-size: 1.8rem; color: var(--accent-gold); }
+        .ap-pass-wrap { position: relative; }
+        .ap-pass-wrap input { width: 100%; padding-right: 2.5rem; }
+        .ap-pass-toggle {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: var(--text-light); cursor: pointer; font-size: 0.95rem;
+        }
+
+        /* Shell: sidebar + main */
+        .ap-shell {
+            display: grid;
+            grid-template-columns: var(--ap-sidebar-w) 1fr;
+            gap: 0;
+            margin: -2rem -1rem 2rem -1rem;
+            min-height: 80vh;
+            background: var(--soft-gray);
+            border-radius: var(--ap-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--ap-shadow-md);
+        }
+
+        .ap-sidebar {
+            background: linear-gradient(195deg, var(--primary-blue), #122c4a 70%);
+            color: #fff;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+        .ap-sidebar-brand { display: flex; align-items: center; gap: 0.65rem; padding: 0 0.5rem; }
+        .ap-sidebar-brand i { color: var(--accent-gold); font-size: 1.4rem; }
+        .ap-sidebar-brand span { font-weight: 700; font-size: 0.95rem; line-height: 1.2; }
+        .ap-sidebar-nav { display: flex; flex-direction: column; gap: 0.25rem; flex: 1; }
+        .ap-nav-item {
+            display: flex; align-items: center; gap: 0.75rem;
+            background: transparent; border: none; color: rgba(255,255,255,0.78);
+            padding: 0.7rem 0.85rem; border-radius: var(--ap-radius-sm);
+            font-size: 0.9rem; font-weight: 600; cursor: pointer; text-align: left;
+            transition: background 0.2s, color 0.2s, transform 0.15s;
+            width: 100%;
+        }
+        .ap-nav-item i { width: 18px; text-align: center; }
+        .ap-nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; transform: translateX(2px); }
+        .ap-nav-item.active { background: var(--accent-gold); color: var(--primary-blue); box-shadow: var(--ap-shadow-sm); }
+        .ap-logout { border-top: 1px solid rgba(255,255,255,0.12); padding-top: 1rem; }
+        .ap-logout:hover { background: rgba(197,48,48,0.25); color: #fff; }
+
+        .ap-main { padding: 1.75rem; overflow-x: hidden; }
+
+        /* Topbar */
+        .ap-topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;
+        }
+        .ap-topbar h2 { color: var(--primary-blue); font-size: 1.35rem; }
+        .ap-topbar p { color: var(--text-light); font-size: 0.85rem; margin-top: 0.15rem; }
+        .ap-topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+        .ap-search {
+            display: flex; align-items: center; gap: 0.5rem;
+            background: #fff; border: 1px solid var(--border-gray);
+            border-radius: 999px; padding: 0.55rem 1rem; min-width: 240px;
+            box-shadow: var(--ap-shadow-sm);
+        }
+        .ap-search i { color: var(--text-light); }
+        .ap-search input { border: none; outline: none; flex: 1; padding: 0; font-size: 0.9rem; }
+        .ap-icon-btn {
+            width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-gray);
+            background: #fff; color: var(--primary-blue); cursor: pointer; font-size: 0.95rem;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--ap-shadow-sm); transition: transform 0.2s, background 0.2s;
+        }
+        .ap-icon-btn:hover { background: var(--accent-gold); color: var(--primary-blue); transform: translateY(-2px) rotate(15deg); }
+
+        /* Stat cards */
+        .ap-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.75rem;
+        }
+        .ap-stat-card {
+            position: relative;
+            background: #fff;
+            border-radius: var(--ap-radius-md);
+            padding: 1.4rem;
+            box-shadow: var(--ap-shadow-sm);
+            border: 1px solid var(--border-gray);
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .ap-stat-card:hover { transform: translateY(-5px); box-shadow: var(--ap-shadow-md); }
+        .ap-stat-card::before {
+            content: ''; position: absolute; top: -30px; right: -30px;
+            width: 90px; height: 90px; border-radius: 50%;
+            background: var(--stat-tint, rgba(10,37,64,0.06));
+        }
+        .ap-stat-icon {
+            width: 46px; height: 46px; border-radius: var(--ap-radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            background: var(--stat-bg, var(--primary-blue)); color: #fff; font-size: 1.1rem;
+            margin-bottom: 0.85rem; box-shadow: var(--ap-shadow-sm);
+        }
+        .ap-stat-card h3 { font-size: 1.9rem; color: var(--primary-blue); position: relative; z-index: 1; }
+        .ap-stat-card p { color: var(--text-light); font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; position: relative; z-index: 1; }
+
+        /* Cards */
+        .ap-card {
+            background: #fff; border-radius: var(--ap-radius-md);
+            border: 1px solid var(--border-gray); box-shadow: var(--ap-shadow-sm);
+            padding: 1.25rem; margin-bottom: 1.5rem;
+        }
+        .ap-card-title {
+            display: flex; align-items: center; gap: 0.5rem;
+            font-weight: 700; color: var(--primary-blue); font-size: 0.95rem;
+            margin-bottom: 0.85rem;
+        }
+        .ap-charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+        .ap-charts-grid .ap-card { margin-bottom: 0; height: 280px; }
+        .ap-charts-grid canvas { max-height: 210px; }
+
+        /* Section nav (within main content, toggled by sidebar) */
+        .ap-section { display: none; animation: fadeIn 0.35s ease; }
+        .ap-section.active { display: block; }
+
+        /* Filter toolbar */
+        .ap-toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-bottom: 1rem; }
+        .ap-filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.85rem; }
+        .ap-filter-grid input, .ap-filter-grid select { width: 100%; }
+
+        .btn-modern {
+            border: none; border-radius: 999px; padding: 0.65rem 1.25rem;
+            font-weight: 600; font-size: 0.85rem; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            position: relative; overflow: hidden;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+            box-shadow: var(--ap-shadow-sm);
+        }
+        .btn-modern:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: var(--ap-shadow-md); }
+        .btn-modern:active { transform: translateY(0); }
+        .btn-modern.btn-modern-primary { background: linear-gradient(135deg, var(--primary-blue), #16395e); color: #fff; }
+        .btn-modern.btn-modern-gold { background: linear-gradient(135deg, var(--accent-gold), #c79f2e); color: var(--primary-blue); }
+        .btn-modern.btn-modern-ghost { background: #fff; color: var(--primary-blue); border: 1px solid var(--border-gray); }
+        .btn-modern.btn-modern-danger { background: linear-gradient(135deg, var(--danger-red), #9b2424); color: #fff; }
+        .btn-modern .ripple-dot {
+            position: absolute; border-radius: 50%; background: rgba(255,255,255,0.55);
+            transform: scale(0); animation: ripple-anim 0.6s ease-out forwards; pointer-events: none;
+        }
+        @keyframes ripple-anim { to { transform: scale(3); opacity: 0; } }
+
+        /* Premium data table */
+        .ap-table-scroll { width: 100%; overflow-x: auto; border-radius: var(--ap-radius-md); }
+        .ap-data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 760px; }
+        .ap-data-table thead th {
+            position: sticky; top: 0; z-index: 5;
+            background: var(--primary-blue); color: #fff;
+            padding: 0.85rem 1rem; text-align: left; font-size: 0.75rem;
+            text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;
+        }
+        .ap-data-table thead th:first-child { border-top-left-radius: var(--ap-radius-sm); }
+        .ap-data-table thead th:last-child { border-top-right-radius: var(--ap-radius-sm); }
+        .ap-data-table tbody tr { transition: background 0.15s ease; border-bottom: 1px solid var(--border-gray); }
+        .ap-data-table tbody tr:hover { background: var(--light-gold); }
+        .ap-data-table td { padding: 0.7rem 1rem; vertical-align: middle; color: var(--text-dark); }
+        .table-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--light-gold); }
+        .ap-badge {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700;
+        }
+        .ap-badge-blue { background: rgba(10,37,64,0.10); color: var(--primary-blue); }
+        .ap-badge-gold { background: rgba(212,175,55,0.18); color: #8a6d10; }
+        .ap-badge-pink { background: rgba(214,87,135,0.14); color: #b3406e; }
+        .ap-row-actions { display: flex; gap: 0.35rem; justify-content: flex-end; }
+        .ap-icon-action {
+            width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-gray);
+            background: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; transition: all 0.15s ease;
+        }
+        .ap-icon-action.act-view { color: var(--primary-blue); }
+        .ap-icon-action.act-edit { color: #8a6d10; }
+        .ap-icon-action.act-print { color: var(--success-green); }
+        .ap-icon-action.act-del { color: var(--danger-red); }
+        .ap-icon-action:hover { transform: translateY(-2px); box-shadow: var(--ap-shadow-sm); filter: brightness(1.05); }
+
+        /* Export center */
+        .ap-export-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .ap-export-tile {
+            background: #fff; border: 1px solid var(--border-gray); border-radius: var(--ap-radius-md);
+            padding: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .ap-export-tile:hover { transform: translateY(-4px); box-shadow: var(--ap-shadow-md); border-color: var(--accent-gold); }
+        .ap-export-tile i { font-size: 1.4rem; color: var(--primary-blue); }
+        .ap-export-tile h4 { font-size: 0.9rem; color: var(--primary-blue); }
+        .ap-export-tile p { font-size: 0.78rem; color: var(--text-light); }
+
+        /* Empty state */
+        .ap-empty { text-align: center; padding: 3rem 1.5rem; color: var(--text-light); }
+        .ap-empty i { font-size: 2.5rem; color: var(--border-gray); margin-bottom: 0.85rem; display: block; }
+        .ap-empty h4 { color: var(--primary-blue); margin-bottom: 0.35rem; font-size: 1rem; }
+
+        /* Skeleton loaders */
+        .ap-skeleton-row td { padding: 0.85rem 1rem; }
+        .ap-skeleton-bar {
+            height: 14px; border-radius: 4px;
+            background: linear-gradient(90deg, var(--border-gray) 25%, #f0f2f4 37%, var(--border-gray) 63%);
+            background-size: 400% 100%; animation: skeleton-shine 1.4s ease infinite;
+        }
+        @keyframes skeleton-shine { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+        /* Toasts (icons + progress) */
+        #toast-container { display: flex; align-items: center; gap: 0.65rem; min-width: 260px; border-radius: var(--ap-radius-sm); }
+        .toast-success, .toast-error { background-image: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.08)); }
+
+        @media (max-width: 900px) {
+            .ap-shell { grid-template-columns: 1fr; }
+            .ap-sidebar { flex-direction: row; flex-wrap: wrap; padding: 1rem; }
+            .ap-sidebar-nav { flex-direction: row; flex-wrap: wrap; }
+            .ap-charts-grid { grid-template-columns: 1fr; }
+            .ap-charts-grid .ap-card { height: auto; }
+        }
     </style>
 </head>
 <body>
@@ -1059,85 +1314,209 @@
         </section>
 
         <section id="admin-tab" class="tab-content hidden">
-            <div id="admin-auth-block" class="auth-card">
+            <div id="admin-auth-block" class="ap-auth-card">
+                <div class="ap-auth-icon"><i class="fa-solid fa-shield-halved"></i></div>
                 <div style="text-align:center;">
-                    <i class="fa-solid fa-shield-halved" style="font-size:3rem; color:var(--primary-blue); margin-bottom:0.5rem;"></i>
                     <h2>Administrative Validation</h2>
-                    <p style="font-size:0.85rem; color:var(--text-light); margin-top:0.25rem;">Enter authorization token password to synchronize records.</p>
+                    <p style="font-size:0.85rem; color:var(--text-light); margin-top:0.25rem;">Enter your authorization token password to synchronize parish records.</p>
                 </div>
                 <div class="form-group">
                     <label for="adminPass">Security Access Code</label>
-                    <input type="password" id="adminPass" placeholder="••••••••">
+                    <div class="ap-pass-wrap">
+                        <input type="password" id="adminPass" placeholder="••••••••" onkeydown="if(event.key==='Enter') authenticateAdminCredentials()">
+                        <button type="button" class="ap-pass-toggle" onclick="toggleAdminPassVisibility()"><i class="fa-solid fa-eye" id="adminPassEyeIcon"></i></button>
+                    </div>
                 </div>
-                <button class="btn-primary btn-full" onclick="authenticateAdminCredentials()"><i class="fa-solid fa-unlock-keyhole"></i> Grant Access</button>
+                <button class="btn-modern btn-modern-primary btn-full" id="adminLoginBtn" onclick="authenticateAdminCredentials()"><i class="fa-solid fa-unlock-keyhole"></i> Grant Access</button>
             </div>
 
-            <div id="admin-dashboard-view" class="hidden">
-                <div class="section-title">
-                    <h2><i class="fa-solid fa-folder-tree"></i> Central Records Ledger Administration</h2>
-                    <p>Search, update, inspect data sheets, print card templates, and evaluate parish demographics metrics instantly.</p>
-                </div>
-
-                <div class="action-bar">
-                    <button class="btn-primary" onclick="fetchAdminData()"><i class="fa-solid fa-rotate"></i> Synchronize Cloud Data</button>
-                    <button class="btn-success" onclick="exportToExcel()"><i class="fa-solid fa-file-excel"></i> Export Matrix to Excel</button>
-                    <button class="btn-secondary" onclick="printBulkIdCards()"><i class="fa-solid fa-id-badge"></i> Print Filtered ID Badges</button>
-                    
-                    <div class="admin-controls-filter-box">
-                        <i class="fa-solid fa-filter" style="color:var(--text-light);"></i>
-                        <input type="text" id="filterSearch" placeholder="Filter by Name, ID, or Phone..." oninput="triggerLiveAdminDataFilters()">
-                        <select id="filterGroup" onchange="triggerLiveAdminDataFilters()">
-                            <option value="">-- Filter Association Group --</option>
-                            <option value="Catholic Men Association">Catholic Men Association</option>
-                            <option value="Christian Mothers Association">Christian Mothers Association</option>
-                            <option value="Catholic Youth Organization (CYO)">Catholic Youth Organization (CYO)</option>
-                            <option value="Altar Servers (Mass Servers)">Altar Servers (Mass Servers)</option>
-                            <option value="Choir">Choir / Musicians</option>
-                            <option value="None">No Registered Group</option>
-                        </select>
-                        <select id="filterSacrament" onchange="triggerLiveAdminDataFilters()">
-                            <option value="">-- Filter Sacrament Status --</option>
-                            <option value="unbaptized">Unbaptized Parishioners</option>
-                            <option value="noCommunion">No Holy Communion Entry</option>
-                            <option value="noConfirmation">No Confirmation Entry</option>
-                        </select>
+            <div id="admin-dashboard-view" class="hidden ap-shell">
+                <aside class="ap-sidebar">
+                    <div class="ap-sidebar-brand">
+                        <i class="fa-solid fa-church"></i>
+                        <span>St. Anthony<br>Admin Center</span>
                     </div>
-                </div>
+                    <nav class="ap-sidebar-nav">
+                        <button class="ap-nav-item active" data-ap-section="overview" onclick="apSwitchSection('overview', this)"><i class="fa-solid fa-gauge-high"></i><span>Dashboard</span></button>
+                        <button class="ap-nav-item" data-ap-section="members" onclick="apSwitchSection('members', this)"><i class="fa-solid fa-users"></i><span>Members</span></button>
+                        <button class="ap-nav-item" data-ap-section="analytics" onclick="apSwitchSection('analytics', this)"><i class="fa-solid fa-chart-line"></i><span>Analytics</span></button>
+                        <button class="ap-nav-item" data-ap-section="export" onclick="apSwitchSection('export', this)"><i class="fa-solid fa-download"></i><span>Export Center</span></button>
+                    </nav>
+                    <button class="ap-nav-item ap-logout" onclick="apLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
+                </aside>
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:1.5rem;">
-                    <div style="background:#FFF; padding:1rem; border-radius:8px; border:1px solid var(--border-gray);">
-                        <p style="font-weight:bold; color:var(--primary-blue); margin-bottom:0.5rem; text-align:center;"><i class="fa-solid fa-chart-pie"></i> Generational Demographics Profile</p>
-                        <div style="max-height:220px; display:flex; justify-content:center;">
-                            <canvas id="chartAgeGroup"></canvas>
+                <div class="ap-main">
+                    <div class="ap-topbar">
+                        <div>
+                            <h2>Welcome back, Admin</h2>
+                            <p id="ap-current-date"></p>
+                        </div>
+                        <div class="ap-topbar-actions">
+                            <div class="ap-search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="filterSearch" placeholder="Search by name, ID, or phone..." oninput="apDebouncedFilter()">
+                            </div>
+                            <button class="ap-icon-btn" onclick="fetchAdminData()" title="Synchronize Cloud Data"><i class="fa-solid fa-rotate"></i></button>
                         </div>
                     </div>
-                    <div style="background:#FFF; padding:1rem; border-radius:8px; border:1px solid var(--border-gray);">
-                        <p style="font-weight:bold; color:var(--primary-blue); margin-bottom:0.5rem; text-align:center;"><i class="fa-solid fa-chart-column"></i> Primary Associations Distribution Matrix</p>
-                        <div style="max-height:220px; display:flex; justify-content:center;">
-                            <canvas id="chartAssociations"></canvas>
+
+                    <!-- OVERVIEW SECTION -->
+                    <div class="ap-section active" id="apSection-overview">
+                        <div class="ap-stats-grid">
+                            <div class="ap-stat-card" style="--stat-bg: var(--primary-blue); --stat-tint: rgba(10,37,64,0.08);">
+                                <div class="ap-stat-icon"><i class="fa-solid fa-users"></i></div>
+                                <h3 id="stat-count-admin">0</h3>
+                                <p>Total Members</p>
+                            </div>
+                            <div class="ap-stat-card" style="--stat-bg:#2c6ea3; --stat-tint:rgba(44,110,163,0.1);">
+                                <div class="ap-stat-icon"><i class="fa-solid fa-person"></i></div>
+                                <h3 id="stat-male">0</h3>
+                                <p>Male Members</p>
+                            </div>
+                            <div class="ap-stat-card" style="--stat-bg:#b3406e; --stat-tint:rgba(179,64,110,0.1);">
+                                <div class="ap-stat-icon"><i class="fa-solid fa-person-dress"></i></div>
+                                <h3 id="stat-female">0</h3>
+                                <p>Female Members</p>
+                            </div>
+                            <div class="ap-stat-card" style="--stat-bg: var(--accent-gold); --stat-tint: rgba(212,175,55,0.14);">
+                                <div class="ap-stat-icon"><i class="fa-solid fa-child-reaching"></i></div>
+                                <h3 id="stat-youth">0</h3>
+                                <p>Youth (Under 18)</p>
+                            </div>
+                            <div class="ap-stat-card" style="--stat-bg: var(--success-green); --stat-tint: rgba(47,133,90,0.1);">
+                                <div class="ap-stat-icon"><i class="fa-solid fa-hands-praying"></i></div>
+                                <h3 id="stat-ministries">0</h3>
+                                <p>Active Ministries</p>
+                            </div>
+                            <div class="ap-stat-card" style="--stat-bg:#718096; --stat-tint:rgba(113,128,150,0.1);">
+                                <div class="ap-stat-icon"><i class="fa-solid fa-user-plus"></i></div>
+                                <h3 id="stat-new">0</h3>
+                                <p>New (Last 30 Days)</p>
+                            </div>
+                        </div>
+
+                        <div class="ap-charts-grid">
+                            <div class="ap-card">
+                                <div class="ap-card-title"><i class="fa-solid fa-chart-pie"></i> Generational Demographics</div>
+                                <canvas id="chartAgeGroup"></canvas>
+                            </div>
+                            <div class="ap-card">
+                                <div class="ap-card-title"><i class="fa-solid fa-chart-column"></i> Top Associations Distribution</div>
+                                <canvas id="chartAssociations"></canvas>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="responsive-table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Photo</th>
-                                <th>Member ID</th>
-                                <th>Full Name</th>
-                                <th>Phone Contact</th>
-                                <th>Gender</th>
-                                <th>Associations Matrix</th>
-                                <th style="text-align:right;">Operations Options</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody">
-                            <tr>
-                                <td colspan="7" class="center-text" style="text-align:center; color:var(--text-light);">No data synchronized yet. Click the cloud refresh handler button above.</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- ANALYTICS SECTION (duplicate-friendly: reuses same canvases when overview hidden, so keep charts always in overview) -->
+                    <div class="ap-section" id="apSection-analytics">
+                        <div class="ap-card">
+                            <div class="ap-card-title"><i class="fa-solid fa-magnifying-glass-chart"></i> Parish Insights</div>
+                            <p style="color:var(--text-light); font-size:0.88rem; line-height:1.7;">
+                                Demographic and association charts are shown on the Dashboard tab. Use the Members tab filters
+                                (sacrament status, association group) to drill into specific cohorts — e.g. unbaptized
+                                parishioners, members without a recorded ministry, or recently registered households.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- MEMBERS SECTION -->
+                    <div class="ap-section" id="apSection-members">
+                        <div class="ap-card">
+                            <div class="ap-card-title"><i class="fa-solid fa-filter"></i> Filters</div>
+                            <div class="ap-filter-grid">
+                                <select id="filterGroup" onchange="triggerLiveAdminDataFilters()">
+                                    <option value="">-- Association Group --</option>
+                                    <option value="Catholic Men Association">Catholic Men Association</option>
+                                    <option value="Christian Mothers Association">Christian Mothers Association</option>
+                                    <option value="Catholic Youth Organization (CYO)">Catholic Youth Organization (CYO)</option>
+                                    <option value="Altar Servers (Mass Servers)">Altar Servers (Mass Servers)</option>
+                                    <option value="Choir">Choir / Musicians</option>
+                                    <option value="None">No Registered Group</option>
+                                </select>
+                                <select id="filterSacrament" onchange="triggerLiveAdminDataFilters()">
+                                    <option value="">-- Sacrament Status --</option>
+                                    <option value="unbaptized">Unbaptized Parishioners</option>
+                                    <option value="noCommunion">No Holy Communion Entry</option>
+                                    <option value="noConfirmation">No Confirmation Entry</option>
+                                </select>
+                                <button class="btn-modern btn-modern-ghost" onclick="apResetFilters()"><i class="fa-solid fa-arrow-rotate-left"></i> Reset Filters</button>
+                                <button class="btn-modern btn-modern-primary" onclick="triggerLiveAdminDataFilters()"><i class="fa-solid fa-check"></i> Apply</button>
+                            </div>
+                        </div>
+
+                        <div class="ap-card">
+                            <div class="ap-toolbar">
+                                <div class="ap-card-title" style="margin-bottom:0;"><i class="fa-solid fa-table-list"></i> Member Registry</div>
+                                <div style="flex:1;"></div>
+                                <button class="btn-modern btn-modern-gold" onclick="printBulkIdCards()"><i class="fa-solid fa-id-badge"></i> Print Filtered ID Badges</button>
+                            </div>
+                            <div class="ap-table-scroll">
+                                <table class="ap-data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Photo</th>
+                                            <th>Member ID</th>
+                                            <th>Full Name</th>
+                                            <th>Phone Contact</th>
+                                            <th>Gender</th>
+                                            <th>Association</th>
+                                            <th style="text-align:right;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminTableBody">
+                                        <tr>
+                                            <td colspan="7">
+                                                <div class="ap-empty">
+                                                    <i class="fa-solid fa-cloud-arrow-down"></i>
+                                                    <h4>No data synchronized yet</h4>
+                                                    <p>Click the refresh icon at the top right to load parish records.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EXPORT CENTER SECTION -->
+                    <div class="ap-section" id="apSection-export">
+                        <div class="ap-card">
+                            <div class="ap-card-title"><i class="fa-solid fa-box-archive"></i> Export Center</div>
+                            <div class="ap-export-grid">
+                                <div class="ap-export-tile" onclick="exportToExcel()">
+                                    <i class="fa-solid fa-file-excel"></i>
+                                    <h4>Export Excel</h4>
+                                    <p>Download the full registry as an .xlsx workbook.</p>
+                                </div>
+                                <div class="ap-export-tile" onclick="exportToExcel()">
+                                    <i class="fa-solid fa-file-csv"></i>
+                                    <h4>Export CSV</h4>
+                                    <p>Spreadsheet export, compatible with any CSV reader.</p>
+                                </div>
+                                <div class="ap-export-tile" onclick="showToast('PDF report generation is coming in a future update.')">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                    <h4>Generate PDF</h4>
+                                    <p>Produce a printable PDF summary report.</p>
+                                </div>
+                                <div class="ap-export-tile" onclick="window.print()">
+                                    <i class="fa-solid fa-print"></i>
+                                    <h4>Print Records</h4>
+                                    <p>Print the currently visible member table.</p>
+                                </div>
+                                <div class="ap-export-tile" onclick="printBulkIdCards()">
+                                    <i class="fa-solid fa-id-badge"></i>
+                                    <h4>Print ID Cards</h4>
+                                    <p>Bulk-print ID badges for all filtered members.</p>
+                                </div>
+                                <div class="ap-export-tile" onclick="showToast('Backups are stored automatically in the connected Google Sheet.')">
+                                    <i class="fa-solid fa-database"></i>
+                                    <h4>Backup Data</h4>
+                                    <p>Your data already lives safely in Google Sheets.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1240,7 +1619,77 @@
         document.addEventListener("DOMContentLoaded", () => {
             initTagSelectEngine();
             document.getElementById("memberForm").addEventListener("submit", commitFormSubmissionPayload);
+            const dateEl = document.getElementById("ap-current-date");
+            if (dateEl) {
+                dateEl.innerText = new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            }
         });
+
+        // ===== Admin Portal UI helpers (sidebar nav, logout, filters, counters) =====
+        function apSwitchSection(sectionKey, btnEl) {
+            document.querySelectorAll(".ap-section").forEach(el => el.classList.remove("active"));
+            document.querySelectorAll(".ap-sidebar-nav .ap-nav-item").forEach(el => el.classList.remove("active"));
+            const target = document.getElementById(`apSection-${sectionKey}`);
+            if (target) target.classList.add("active");
+            if (btnEl) btnEl.classList.add("active");
+        }
+
+        function apLogout() {
+            appState.adminTokenPassword = null;
+            appState.cachedMembers = [];
+            document.getElementById("adminPass").value = "";
+            document.getElementById("admin-dashboard-view").classList.add("hidden");
+            document.getElementById("admin-auth-block").classList.remove("hidden");
+            showToast("Logged out of the Admin Portal.");
+        }
+
+        function apResetFilters() {
+            document.getElementById("filterSearch").value = "";
+            document.getElementById("filterGroup").value = "";
+            document.getElementById("filterSacrament").value = "";
+            triggerLiveAdminDataFilters();
+        }
+
+        function toggleAdminPassVisibility() {
+            const input = document.getElementById("adminPass");
+            const icon = document.getElementById("adminPassEyeIcon");
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        // Lightweight count-up animation for the stat cards
+        function animateApCounter(elId, targetValue) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            const startValue = parseInt(el.innerText, 10) || 0;
+            const duration = 600;
+            const startTime = performance.now();
+            function step(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.innerText = Math.round(startValue + (targetValue - startValue) * eased);
+                if (progress < 1) requestAnimationFrame(step);
+                else el.innerText = targetValue;
+            }
+            requestAnimationFrame(step);
+        }
+
+        // Debounce helper for live search filtering
+        function apDebounce(fn, wait) {
+            let t;
+            return function(...args) {
+                clearTimeout(t);
+                t = setTimeout(() => fn.apply(this, args), wait);
+            };
+        }
+        const apDebouncedFilter = apDebounce(() => triggerLiveAdminDataFilters(), 220);
 
         // Tab View Switching Controller Routine Engine Hooks
         function switchTab(tabKey) {
@@ -1560,18 +2009,44 @@
             
             // Render demographic profiles and association matrix charts instantly
             renderAnalyticsCharts(records);
-            
-            // UPGRADE APPLIED: Update the dynamic counter box container metric text with array row size total
-            document.getElementById("stat-count").innerText = records.length;
+
+            // Compute premium stat-card breakdowns
+            const maleCount = records.filter(m => m["Gender"] === "Male").length;
+            const femaleCount = records.filter(m => m["Gender"] === "Female").length;
+            const youthCountStat = records.filter(m => parseInt(m["Age"], 10) < 18).length;
+            const ministrySet = new Set(records.map(m => m["Ministry"]).filter(v => v && v !== "None"));
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const newCount = records.filter(m => {
+                const joined = m["Date Joined Church"] || m["Timestamp"];
+                if (!joined) return false;
+                const d = new Date(joined);
+                return !isNaN(d) && d >= thirtyDaysAgo;
+            }).length;
+
+            animateApCounter("stat-count", records.length);
+            animateApCounter("stat-count-admin", records.length);
+            animateApCounter("stat-male", maleCount);
+            animateApCounter("stat-female", femaleCount);
+            animateApCounter("stat-youth", youthCountStat);
+            animateApCounter("stat-ministries", ministrySet.size);
+            animateApCounter("stat-new", newCount);
             
             if (records.length === 0) {
-                body.innerHTML = `<tr><td colspan="7" class="center-text" style="text-align:center;">No registered row datasets found inside ledger file.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="7">
+                    <div class="ap-empty">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <h4>No registered records found</h4>
+                        <p>Try syncing again, or adjust your filters.</p>
+                    </div>
+                </td></tr>`;
                 return;
             }
             
             body.innerHTML = records.map(m => {
-                const fallbackAvatar = `<div class="table-avatar" style="background:#0a2540;color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;"><i class="fa-solid fa-user"></i></div>`;
+                const fallbackAvatar = `<div class="table-avatar" style="background:#0a2540;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;"><i class="fa-solid fa-user"></i></div>`;
                 const avatarImg = m["Profile Photo URL"] ? `<img src="${m["Profile Photo URL"]}" class="table-avatar" alt="Avatar">` : fallbackAvatar;
+                const genderBadgeClass = m["Gender"] === "Female" ? "ap-badge-pink" : "ap-badge-blue";
                 
                 return `
                     <tr>
@@ -1579,13 +2054,15 @@
                         <td><strong>${m["Member ID"]}</strong></td>
                         <td>${m["Full Name"]}</td>
                         <td>${m["Phone Number"]}</td>
-                        <td>${m["Gender"]}</td>
-                        <td><span class="tag-pill" style="font-size:11px; padding:2px 8px;">${m["Parish Group"] || 'None'}</span></td>
-                        <td style="text-align:right;">
-                            <button class="btn-primary" style="padding:4px 8px; font-size:11px;" onclick="viewDigitalProfileCard('${m["Member ID"]}')"><i class="fa-solid fa-eye"></i> View</button>
-                            <button class="btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="loadRecordToEditorWizard('${m["Member ID"]}')"><i class="fa-solid fa-user-gear"></i> Edit</button>
-                            <button class="btn-success" style="padding:4px 8px; font-size:11px;" onclick="printDossier('${m["Member ID"]}')"><i class="fa-solid fa-print"></i> Dossier</button>
-                            <button class="btn-danger" style="padding:4px 8px; font-size:11px;" onclick="purgeLedgerRecord('${m["Member ID"]}')"><i class="fa-solid fa-trash-can"></i></button>
+                        <td><span class="ap-badge ${genderBadgeClass}">${m["Gender"] || 'N/A'}</span></td>
+                        <td><span class="ap-badge ap-badge-gold">${m["Parish Group"] || 'None'}</span></td>
+                        <td>
+                            <div class="ap-row-actions">
+                                <button class="ap-icon-action act-view" title="View" onclick="viewDigitalProfileCard('${m["Member ID"]}')"><i class="fa-solid fa-eye"></i></button>
+                                <button class="ap-icon-action act-edit" title="Edit" onclick="loadRecordToEditorWizard('${m["Member ID"]}')"><i class="fa-solid fa-user-gear"></i></button>
+                                <button class="ap-icon-action act-print" title="Print Dossier" onclick="printDossier('${m["Member ID"]}')"><i class="fa-solid fa-print"></i></button>
+                                <button class="ap-icon-action act-del" title="Delete" onclick="purgeLedgerRecord('${m["Member ID"]}')"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -1620,9 +2097,6 @@
 
                 return matchesSearch && matchesGroup && matchesSacrament;
             });
-
-            // UPGRADE APPLIED: Dynamically bound live tracker counter metric display to size text parameters inside filter lists
-            document.getElementById("stat-count").innerText = filteredList.length;
 
             renderAdminTable(filteredList);
         }
