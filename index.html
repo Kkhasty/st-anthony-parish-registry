@@ -1183,10 +1183,10 @@
                             </div>
                             <div class="form-group">
                                 <label for="phoneNumber">Phone Number <span class="required">*</span></label>
-                                <input type="tel" id="phoneNumber" required placeholder="e.g., 0241234567">
+                           <input type="tel" id="phoneNumber" required placeholder="e.g., 0241234567" pattern="^0\d{9}$" maxlength="10" minlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" title="Phone number must be exactly 10 digits and start with 0">
                             </div>
                             <div class="form-group">
-                                <label for="whatsAppNumber">WhatsApp Number</label> <input type="tel" id="whatsAppNumber" placeholder="e.g., 0241234567">
+                               <label for="whatsAppNumber">WhatsApp Number</label> <input type="tel" id="whatsAppNumber" placeholder="e.g., 0241234567" pattern="^0\d{9}$" maxlength="10" minlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" title="WhatsApp number must be exactly 10 digits and start with 0">
                             </div>
                             <div class="form-group">
                                 <label for="emailAddress">Email Address</label>
@@ -1303,7 +1303,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="emergencyPhone">Emergency Contact Number <span class="required">*</span></label>
-                                <input type="tel" id="emergencyPhone" required placeholder="e.g., 0551234567">
+                             <input type="tel" id="emergencyPhone" required placeholder="e.g., 0551234567" pattern="^0\d{9}$" maxlength="10" minlength="10" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" title="Emergency number must be exactly 10 digits and start with 0">
                             </div>
                         </div>
                     </fieldset>
